@@ -34,7 +34,7 @@ public class Person {
     private String functietype;
     private String speleenheid_soort;
     private String speleenheid;
-    private String Speleenheidnummer;
+    private String speleenheidnummer;
     private String organisatienummer;
     private String organisatie_categorie;
     private String organisatie;
@@ -238,11 +238,11 @@ public class Person {
     }
 
     public String getSpeleenheidnummer() {
-        return Speleenheidnummer;
+        return speleenheidnummer;
     }
 
-    public void setSpeleenheidnummer(String Speleenheidnummer) {
-        this.Speleenheidnummer = Speleenheidnummer;
+    public void setSpeleenheidnummer(String speleenheidnummer) {
+        this.speleenheidnummer = speleenheidnummer;
     }
 
     public String getOrganisatienummer() {
