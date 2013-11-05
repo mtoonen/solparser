@@ -38,7 +38,7 @@ public class Parser {
     private Workbook workbook;
     private FileOutputStream out = null;
     
-    private static final int NUM_ATTRIBUTES_PER_PERSON = 28;
+    private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
@@ -94,9 +94,10 @@ public class Parser {
         for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
             Sheet sheet = workbook.createSheet(eenheid);
             List<Person> personsPerEenheid = sortedPersonsPerSpelenheid.get(eenheid);
+            createHeading(sheet);
             for (int i = 0; i < personsPerEenheid.size(); i++) {
                 Person person = personsPerEenheid.get(i);
-                Row r = createRow(person,sheet,i);
+                Row r = createRow(person,sheet,i+1);
                 
             }
         }
@@ -148,6 +149,28 @@ public class Parser {
         cells[17].setCellValue(p.getFunctie_startdatum());
         
         return r;
+    }
+    
+    private void createHeading (Sheet sheet){
+        Row r = sheet.createRow(0);
+        r.createCell(0).setCellValue("Lidnummer");
+        r.createCell(1).setCellValue("Achternaam");
+        r.createCell(2).setCellValue("Tussenvoegsel");
+        r.createCell(3).setCellValue("Voornaam");
+        r.createCell(4).setCellValue("Initialen");
+        r.createCell(5).setCellValue("Geslacht");
+        r.createCell(6).setCellValue("Straat");
+        r.createCell(7).setCellValue("Adres");
+        r.createCell(8).setCellValue("Postcode");
+        r.createCell(9).setCellValue("Plaats");
+        r.createCell(10).setCellValue("Telefoonnummer");
+        r.createCell(11).setCellValue("Mobiel");
+        r.createCell(12).setCellValue("Mail lid");
+        r.createCell(13).setCellValue("Mail ouder/verzorger");
+        r.createCell(14).setCellValue("Speltak");
+        r.createCell(15).setCellValue("Functie");
+        r.createCell(16).setCellValue("Geboortedatum");
+        r.createCell(17).setCellValue("Functie startdatum");
     }
     
 
