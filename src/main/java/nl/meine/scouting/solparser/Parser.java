@@ -122,9 +122,30 @@ public class Parser {
             Cell c = r.createCell(i);
             cells[i] = c;
         }
-        cells[0].setCellValue(p.getLid_voornaam());
-        cells[1].setCellValue(p.getLid_tussenvoegsel());
-        cells[2].setCellValue(p.getLid_achternaam());
+//        Lidnummer	Achternaam	tussenvoegsel	Roepnaam	Voorletters	geslacht	Adres	Huisnummer	Postcode	Woonplaats	
+        cells[0].setCellValue(p.getLidnummer());
+        cells[1].setCellValue(p.getLid_achternaam());
+        cells[2].setCellValue(p.getLid_tussenvoegsel());
+        cells[3].setCellValue(p.getLid_voornaam());
+        cells[4].setCellValue(p.getLid_initialen());
+        cells[5].setCellValue(p.getLid_geslacht());
+        cells[6].setCellValue(p.getLid_straat());
+        cells[7].setCellValue(p.getLid_huisnummer() + " " + p.getLid_toevoegsel_huisnr());
+        cells[8].setCellValue(p.getLid_postcode());
+        cells[9].setCellValue(p.getLid_plaats());
+        //telefoon	mobiel lid	mobiel ouders 	
+        //mobiel vader	mobiel moeder	// niet aanwezig!
+        //e-mail lid	e-mail ouders	(Jeugd)lid bij Speltak	
+        //Leiding bij Speltak	// Volgt uit tabbladen verdeling
+        //Functie	Geboortedatum	Lid sinds
+        cells[10].setCellValue(p.getLid_telefoon());
+        cells[11].setCellValue(p.getLid_mobiel());
+        cells[12].setCellValue(p.getLid_mailadres());
+        cells[13].setCellValue(p.getLid_mailadres_ouder_verzorger());
+        cells[14].setCellValue(p.getSpeleenheid());
+        cells[15].setCellValue(p.getFunctie());
+        cells[16].setCellValue(p.getLid_geboortedatum());
+        cells[17].setCellValue(p.getFunctie_startdatum());
         
         return r;
     }
