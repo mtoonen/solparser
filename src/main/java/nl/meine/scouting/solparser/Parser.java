@@ -6,12 +6,20 @@ package nl.meine.scouting.solparser;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.meine.scouting.solparser.entities.Person;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  *
@@ -21,12 +29,13 @@ public class Parser {
 
     public static void main(String[] args) {
         Parser p = new Parser("test.csv", "aap.xls");
-        p.read();
+        p.start();
     }
     private File input;
     private File output;
     private Sheet sheet;
-    private Map<String, Person> sortedPersonsPerSpelenheid = new HashMap();
+    private Map<String, List<Person>> sortedPersonsPerSpelenheid = new HashMap();
+    private List<Person> allPersons = new ArrayList();
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
@@ -39,6 +48,7 @@ public class Parser {
     }
 
     public void start() {
+        read();
     }
 
     public void read() {
@@ -50,14 +60,41 @@ public class Parser {
                 str = str.replaceAll("\"", "");
                 String [] ar = str.split(";");
                 Person p = createPerson(ar);
-                sortedPersonsPerSpelenheid.put(p.getSpeleenheid(), p);
+                String spelEenheid = p.getSpeleenheid();
+                if(!sortedPersonsPerSpelenheid.containsKey(spelEenheid)){
+                    sortedPersonsPerSpelenheid.put(spelEenheid, new ArrayList());
+                }
+                sortedPersonsPerSpelenheid.get(p.getSpeleenheid()).add( p);
+                allPersons.add(p);
             }
             in.close();
         } catch (IOException e) {
-            System.out.println("File Read Error");
+            System.err.println("File Read Error" + e.getLocalizedMessage());
         }
 
     }
+    
+    
+    public void write() {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(output);
+            // create a new workbook
+            Workbook wb = new HSSFWorkbook();
+            // create a new sheet
+            for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
+            }
+        } catch (FileNotFoundException ex) {
+            System.err.println("File Read Error" + ex.getLocalizedMessage());
+        } finally {
+            try {
+                out.close();
+            } catch (IOException ex) {
+                System.err.println("File Read Error" + ex.getLocalizedMessage());
+            }
+        }
+    }
+
     private Person createPerson(String[] row) {
 //"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
         Person p = new Person();
@@ -96,6 +133,4 @@ public class Parser {
         return p;
     }
 
-    public void write() {
-    }
 }
