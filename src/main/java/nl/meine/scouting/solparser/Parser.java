@@ -97,6 +97,15 @@ public class Parser {
     }
 
     public void write() {
+        
+        // Make sheet for all the persons
+        Sheet all = workbook.createSheet("Allemaal");
+        createHeading(all);
+        for(int i = 0 ; i < allPersons.size();i++){
+            Person person = allPersons.get(i);
+            createRow(person, all, i);
+        }
+        postProcessSheet(all);
         // create a new sheet
         for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
             Sheet sheet = workbook.createSheet(eenheid);
@@ -104,14 +113,10 @@ public class Parser {
             createHeading(sheet);
             for (int i = 0; i < personsPerEenheid.size(); i++) {
                 Person person = personsPerEenheid.get(i);
-                Row r = createRow(person, sheet, i + 1);
+                Row r = createRow(person, sheet, i );
             }
             
-            // Set the with to auto
-            int numcells = sheet.getRow(0).getLastCellNum();
-            for (int i = 0; i < numcells; i++) {
-                sheet.autoSizeColumn(i);
-            }
+            postProcessSheet(sheet);
         }
         try {
             workbook.write(out);
@@ -127,8 +132,18 @@ public class Parser {
             }
         }
     }
+    
+    private void postProcessSheet(Sheet sheet){
+        // Set the with to auto
+        int numcells = sheet.getRow(0).getLastCellNum();
+        for (int i = 0; i < numcells; i++) {
+            sheet.autoSizeColumn(i);
+        }
+    }
 
     private Row createRow(Person p, Sheet sheet, int index) {
+        // Skip the heading
+        index++;
         Row r = sheet.createRow(index);
         Cell[] cells = new Cell[NUM_ATTRIBUTES_PER_PERSON];
         for (int i = 0; i < NUM_ATTRIBUTES_PER_PERSON; i++) {
@@ -245,8 +260,9 @@ public class Parser {
         headingStyle.setFont(f);
         //set a thin border
         headingStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-        //set the cell format to text see DataFormat for a full list
-        headingStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+        headingStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
+        headingStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+        headingStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
 
     }
 }
