@@ -16,11 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -42,8 +43,9 @@ public class Parser {
     private Workbook workbook;
     private FileOutputStream out = null;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
-    
     private CellStyle headingStyle;
+    private CellStyle normalStyle;
+    private CellStyle zebraStyle;
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
@@ -82,7 +84,7 @@ public class Parser {
                 str = str.replaceAll("\"", "");
                 String[] ar = str.split(";");
                 Person p = createPerson(ar);
-                
+
                 allPersons.add(p);
             }
             in.close();
@@ -92,8 +94,8 @@ public class Parser {
         postProcessPersons();
 
     }
-    
-    private void postProcessPersons(){
+
+    private void postProcessPersons() {
         for (Person person : allPersons) {
             String spelEenheid = person.getSpeleenheid();
             if (!sortedPersonsPerSpelenheid.containsKey(spelEenheid)) {
@@ -104,11 +106,11 @@ public class Parser {
     }
 
     public void write() {
-        
+
         // Make sheet for all the persons
         Sheet all = workbook.createSheet("Allemaal");
         createHeading(all);
-        for(int i = 0 ; i < allPersons.size();i++){
+        for (int i = 0; i < allPersons.size(); i++) {
             Person person = allPersons.get(i);
             createRow(person, all, i);
         }
@@ -120,9 +122,9 @@ public class Parser {
             createHeading(sheet);
             for (int i = 0; i < personsPerEenheid.size(); i++) {
                 Person person = personsPerEenheid.get(i);
-                Row r = createRow(person, sheet, i );
+                Row r = createRow(person, sheet, i);
             }
-            
+
             postProcessSheet(sheet);
         }
         try {
@@ -139,8 +141,8 @@ public class Parser {
             }
         }
     }
-    
-    private void postProcessSheet(Sheet sheet){
+
+    private void postProcessSheet(Sheet sheet) {
         // Set the with to auto
         int numcells = sheet.getRow(0).getLastCellNum();
         for (int i = 0; i < numcells; i++) {
@@ -156,6 +158,11 @@ public class Parser {
         for (int i = 0; i < NUM_ATTRIBUTES_PER_PERSON; i++) {
             Cell c = r.createCell(i);
             cells[i] = c;
+            if (index % 2 == 0) {
+                c.setCellStyle(zebraStyle);
+            } else {
+                c.setCellStyle(normalStyle);
+            }
         }
 //        Lidnummer	Achternaam	tussenvoegsel	Roepnaam	Voorletters	geslacht	Adres	Huisnummer	Postcode	Woonplaats	
         cells[0].setCellValue(p.getLidnummer());
@@ -205,9 +212,9 @@ public class Parser {
         r.createCell(15).setCellValue("Functie");
         r.createCell(16).setCellValue("Geboortedatum");
         r.createCell(17).setCellValue("Functie startdatm");
-       
+
         Iterator<Cell> it = r.cellIterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             Cell c = it.next();
             c.setCellStyle(headingStyle);
         }
@@ -257,7 +264,6 @@ public class Parser {
 
         headingStyle = workbook.createCellStyle();
         Font f = workbook.createFont();
-        Font f2 = workbook.createFont();
 
         //set font 1 to 12 point type
         f.setFontHeightInPoints((short) 12);
@@ -270,6 +276,21 @@ public class Parser {
         headingStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
         headingStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
         headingStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
+
+
+
+        normalStyle = workbook.createCellStyle();
+        normalStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        normalStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        normalStyle.setBorderTop(CellStyle.BORDER_THIN);
+        normalStyle.setBorderRight(CellStyle.BORDER_THIN);
+        Font f2 = workbook.createFont();
+        normalStyle.setFont(f2);
+
+        zebraStyle = workbook.createCellStyle();
+        zebraStyle.cloneStyleFrom(normalStyle);
+        zebraStyle.setFillForegroundColor(IndexedColors.DARK_YELLOW.index);
+        zebraStyle.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
 
     }
 }
