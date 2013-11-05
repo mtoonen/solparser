@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -35,16 +36,17 @@ public class Parser {
     private Map<String, List<Person>> sortedPersonsPerSpelenheid = new HashMap();
     private List<Person> allPersons = new ArrayList();
     private Workbook workbook;
+    private FileOutputStream out = null;
+    
+    private static final int NUM_ATTRIBUTES_PER_PERSON = 28;
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
         output = new File(outputFile);
         init();
-
     }
 
     private void init() {
-         FileOutputStream out = null;
         try {
             out = new FileOutputStream(output);
             // create a new workbook
@@ -52,19 +54,12 @@ public class Parser {
            
         } catch (FileNotFoundException ex) {
             System.err.println("File Read Error" + ex.getLocalizedMessage());
-        } finally {
-            try {
-                if(out != null){
-                    out.close();
-                }
-            } catch (IOException ex) {
-                System.err.println("File Read Error" + ex.getLocalizedMessage());
-            }
-        }
+        } 
     }
 
     public void start() {
         read();
+        write();
     }
 
     public void read() {
@@ -73,6 +68,9 @@ public class Parser {
             String str;
             str = in.readLine();
             while ((str = in.readLine()) != null) {
+                if(str.isEmpty()){
+                    continue;
+                }
                 str = str.replaceAll("\"", "");
                 String [] ar = str.split(";");
                 Person p = createPerson(ar);
@@ -101,12 +99,32 @@ public class Parser {
                 Row r = createRow(person,sheet,i);
                 
             }
-            
+        }
+        try {
+            workbook.write(out);
+        } catch (IOException ex) {
+            System.err.println("File write Error" + ex.getLocalizedMessage());
+        }finally{
+            if(out != null){
+                try {
+                    out.close();
+                } catch (IOException ex) {
+            System.err.println("File close Error" + ex.getLocalizedMessage());
+                }
+            }
         }
     }
     
     private Row createRow(Person p, Sheet sheet, int index){
         Row r = sheet.createRow(index);
+        Cell[] cells = new Cell[NUM_ATTRIBUTES_PER_PERSON];
+        for (int i = 0; i < NUM_ATTRIBUTES_PER_PERSON; i++) {
+            Cell c = r.createCell(i);
+            cells[i] = c;
+        }
+        cells[0].setCellValue(p.getLid_voornaam());
+        cells[1].setCellValue(p.getLid_tussenvoegsel());
+        cells[2].setCellValue(p.getLid_achternaam());
         
         return r;
     }
