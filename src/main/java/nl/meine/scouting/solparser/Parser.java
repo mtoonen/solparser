@@ -12,11 +12,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -37,8 +41,9 @@ public class Parser {
     private List<Person> allPersons = new ArrayList();
     private Workbook workbook;
     private FileOutputStream out = null;
-    
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
+    
+    private CellStyle headingStyle;
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
@@ -51,10 +56,11 @@ public class Parser {
             out = new FileOutputStream(output);
             // create a new workbook
             workbook = new HSSFWorkbook();
-           
+            createStyles();
+
         } catch (FileNotFoundException ex) {
             System.err.println("File Read Error" + ex.getLocalizedMessage());
-        } 
+        }
     }
 
     public void start() {
@@ -66,19 +72,21 @@ public class Parser {
         try {
             BufferedReader in = new BufferedReader(new FileReader(input));
             String str;
+
+            // Skip first line
             str = in.readLine();
             while ((str = in.readLine()) != null) {
-                if(str.isEmpty()){
+                if (str.isEmpty()) {
                     continue;
                 }
                 str = str.replaceAll("\"", "");
-                String [] ar = str.split(";");
+                String[] ar = str.split(";");
                 Person p = createPerson(ar);
                 String spelEenheid = p.getSpeleenheid();
-                if(!sortedPersonsPerSpelenheid.containsKey(spelEenheid)){
+                if (!sortedPersonsPerSpelenheid.containsKey(spelEenheid)) {
                     sortedPersonsPerSpelenheid.put(spelEenheid, new ArrayList());
                 }
-                sortedPersonsPerSpelenheid.get(p.getSpeleenheid()).add( p);
+                sortedPersonsPerSpelenheid.get(p.getSpeleenheid()).add(p);
                 allPersons.add(p);
             }
             in.close();
@@ -87,8 +95,7 @@ public class Parser {
         }
 
     }
-    
-    
+
     public void write() {
         // create a new sheet
         for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
@@ -97,26 +104,31 @@ public class Parser {
             createHeading(sheet);
             for (int i = 0; i < personsPerEenheid.size(); i++) {
                 Person person = personsPerEenheid.get(i);
-                Row r = createRow(person,sheet,i+1);
-                
+                Row r = createRow(person, sheet, i + 1);
+            }
+            
+            // Set the with to auto
+            int numcells = sheet.getRow(0).getLastCellNum();
+            for (int i = 0; i < numcells; i++) {
+                sheet.autoSizeColumn(i);
             }
         }
         try {
             workbook.write(out);
         } catch (IOException ex) {
             System.err.println("File write Error" + ex.getLocalizedMessage());
-        }finally{
-            if(out != null){
+        } finally {
+            if (out != null) {
                 try {
                     out.close();
                 } catch (IOException ex) {
-            System.err.println("File close Error" + ex.getLocalizedMessage());
+                    System.err.println("File close Error" + ex.getLocalizedMessage());
                 }
             }
         }
     }
-    
-    private Row createRow(Person p, Sheet sheet, int index){
+
+    private Row createRow(Person p, Sheet sheet, int index) {
         Row r = sheet.createRow(index);
         Cell[] cells = new Cell[NUM_ATTRIBUTES_PER_PERSON];
         for (int i = 0; i < NUM_ATTRIBUTES_PER_PERSON; i++) {
@@ -147,11 +159,11 @@ public class Parser {
         cells[15].setCellValue(p.getFunctie());
         cells[16].setCellValue(p.getLid_geboortedatum());
         cells[17].setCellValue(p.getFunctie_startdatum());
-        
+
         return r;
     }
-    
-    private void createHeading (Sheet sheet){
+
+    private void createHeading(Sheet sheet) {
         Row r = sheet.createRow(0);
         r.createCell(0).setCellValue("Lidnummer");
         r.createCell(1).setCellValue("Achternaam");
@@ -170,9 +182,14 @@ public class Parser {
         r.createCell(14).setCellValue("Speltak");
         r.createCell(15).setCellValue("Functie");
         r.createCell(16).setCellValue("Geboortedatum");
-        r.createCell(17).setCellValue("Functie startdatum");
+        r.createCell(17).setCellValue("Functie startdatm");
+       
+        Iterator<Cell> it = r.cellIterator();
+        while(it.hasNext()){
+            Cell c = it.next();
+            c.setCellStyle(headingStyle);
+        }
     }
-    
 
     private Person createPerson(String[] row) {
 //"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
@@ -188,9 +205,9 @@ public class Parser {
         p.setLid_postcode(row[8]);
 //"lid postcode";"lid plaats";"lid land";"lid mailadres";"Lid mailadres ouder/verzorger";"Lid geslacht";"lid geboortedatum";"lid mobiel";
         p.setLid_plaats(row[9]);
-        p.setLid_land (row[10]);
+        p.setLid_land(row[10]);
         p.setLid_mailadres(row[11]);
-        p.setLid_mailadres_ouder_verzorger (row[12]);
+        p.setLid_mailadres_ouder_verzorger(row[12]);
         p.setLid_geslacht(row[13]);
         p.setLid_geboortedatum(row[14]);
         p.setLid_mobiel(row[15]);
@@ -214,4 +231,22 @@ public class Parser {
         return p;
     }
 
+    private void createStyles() {
+
+        headingStyle = workbook.createCellStyle();
+        Font f = workbook.createFont();
+        Font f2 = workbook.createFont();
+
+        //set font 1 to 12 point type
+        f.setFontHeightInPoints((short) 12);
+        // make it bold
+        //arial is the default font
+        f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        headingStyle.setFont(f);
+        //set a thin border
+        headingStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+        //set the cell format to text see DataFormat for a full list
+        headingStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
+
+    }
 }
