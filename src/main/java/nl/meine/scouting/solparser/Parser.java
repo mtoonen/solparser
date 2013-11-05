@@ -82,18 +82,25 @@ public class Parser {
                 str = str.replaceAll("\"", "");
                 String[] ar = str.split(";");
                 Person p = createPerson(ar);
-                String spelEenheid = p.getSpeleenheid();
-                if (!sortedPersonsPerSpelenheid.containsKey(spelEenheid)) {
-                    sortedPersonsPerSpelenheid.put(spelEenheid, new ArrayList());
-                }
-                sortedPersonsPerSpelenheid.get(p.getSpeleenheid()).add(p);
+                
                 allPersons.add(p);
             }
             in.close();
         } catch (IOException e) {
             System.err.println("File Read Error" + e.getLocalizedMessage());
         }
+        postProcessPersons();
 
+    }
+    
+    private void postProcessPersons(){
+        for (Person person : allPersons) {
+            String spelEenheid = person.getSpeleenheid();
+            if (!sortedPersonsPerSpelenheid.containsKey(spelEenheid)) {
+                sortedPersonsPerSpelenheid.put(spelEenheid, new ArrayList());
+            }
+            sortedPersonsPerSpelenheid.get(spelEenheid).add(person);
+        }
     }
 
     public void write() {
