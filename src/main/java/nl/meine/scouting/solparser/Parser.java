@@ -28,7 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class Parser {
 
     public static void main(String[] args) {
-        Parser p = new Parser("test.csv", "aap.xls");
+        Parser p = new Parser("selectie_2871.csv", "aap.xls");
         p.start();
     }
     private File input;
@@ -202,7 +202,9 @@ public class Parser {
         p.setFunctienummer(row[20]);
         p.setFunctietype(row[21]);
         p.setSpeleenheid_soort(row[22]);
-        p.setSpeleenheid(row[23]);
+        String speleenheid = row[23];
+        speleenheid = speleenheid.replaceAll("/", "-");
+        p.setSpeleenheid(speleenheid);
         p.setSpeleenheidnummer(row[24]);
 //;"organisatienummer";"organisatie categorie";"organisatie";"organisatie plaats"
         p.setOrganisatienummer(row[25]);
