@@ -14,10 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.meine.scouting.solparser.entities.Person;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -33,9 +32,9 @@ public class Parser {
     }
     private File input;
     private File output;
-    private Sheet sheet;
     private Map<String, List<Person>> sortedPersonsPerSpelenheid = new HashMap();
     private List<Person> allPersons = new ArrayList();
+    private Workbook workbook;
 
     public Parser(String inputFile, String outputFile) {
         input = new File(inputFile);
@@ -45,6 +44,23 @@ public class Parser {
     }
 
     private void init() {
+         FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(output);
+            // create a new workbook
+            workbook = new HSSFWorkbook();
+           
+        } catch (FileNotFoundException ex) {
+            System.err.println("File Read Error" + ex.getLocalizedMessage());
+        } finally {
+            try {
+                if(out != null){
+                    out.close();
+                }
+            } catch (IOException ex) {
+                System.err.println("File Read Error" + ex.getLocalizedMessage());
+            }
+        }
     }
 
     public void start() {
@@ -76,24 +92,25 @@ public class Parser {
     
     
     public void write() {
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(output);
-            // create a new workbook
-            Workbook wb = new HSSFWorkbook();
-            // create a new sheet
-            for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
+        // create a new sheet
+        for (String eenheid : sortedPersonsPerSpelenheid.keySet()) {
+            Sheet sheet = workbook.createSheet(eenheid);
+            List<Person> personsPerEenheid = sortedPersonsPerSpelenheid.get(eenheid);
+            for (int i = 0; i < personsPerEenheid.size(); i++) {
+                Person person = personsPerEenheid.get(i);
+                Row r = createRow(person,sheet,i);
+                
             }
-        } catch (FileNotFoundException ex) {
-            System.err.println("File Read Error" + ex.getLocalizedMessage());
-        } finally {
-            try {
-                out.close();
-            } catch (IOException ex) {
-                System.err.println("File Read Error" + ex.getLocalizedMessage());
-            }
+            
         }
     }
+    
+    private Row createRow(Person p, Sheet sheet, int index){
+        Row r = sheet.createRow(index);
+        
+        return r;
+    }
+    
 
     private Person createPerson(String[] row) {
 //"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
