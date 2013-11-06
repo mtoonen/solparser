@@ -25,6 +25,7 @@ import org.apache.poi.ss.usermodel.PatternFormatting;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  *
@@ -218,6 +219,8 @@ public class Parser {
             Cell c = it.next();
             c.setCellStyle(headingStyle);
         }
+        
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 17));
     }
 
     private Person createPerson(String[] row) {
