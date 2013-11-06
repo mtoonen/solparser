@@ -17,10 +17,55 @@
  */
 package nl.meine.scouting.solparser.writer;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import nl.meine.scouting.solparser.entities.Person;
+
 /**
  *
  * @author Meine Toonen
  */
-public interface SolWriter {
+public abstract class SolWriter {
+    protected List<Person> allPersons = new ArrayList();
+    protected Map<String, List<Person>> sortedPersons = new HashMap();
+    protected File output;
+    
+    public SolWriter(){
+    }
+    
+    public abstract void init();
+    public abstract void write();
+    
+    @Override
+    public void finalize() throws Throwable{
+        super.finalize();
+    }
+
+    public List<Person> getAllPersons() {
+        return allPersons;
+    }
+
+    public void setAllPersons(List<Person> allPersons) {
+        this.allPersons = allPersons;
+    }
+
+    public Map<String, List<Person>> getSortedPersons() {
+        return sortedPersons;
+    }
+
+    public void setSortedPersons(Map<String, List<Person>> sortedPersons) {
+        this.sortedPersons = sortedPersons;
+    }
+
+    public File getOutput() {
+        return output;
+    }
+
+    public void setOutput(File output) {
+        this.output = output;
+    }
     
 }
