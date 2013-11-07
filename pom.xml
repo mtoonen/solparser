@@ -13,7 +13,51 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>nl.meine.scouting.solparser.Main</mainClass>
+                            <packageName>nl.meine.scouting.solparser</packageName>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <!--manifestEntries>
+                            <mode>development</mode>
+                            <url>${pom.url}</url>
+                        </manifestEntries-->
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -26,11 +70,11 @@
             <artifactId>poi</artifactId>
             <version>3.10-beta2</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.9</version>
-        </dependency>
+        </dependency-->
             
             
             
