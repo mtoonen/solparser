@@ -15,22 +15,26 @@
  *  You should have received a copy of the GNU General Public License
  *  along with the SolParser librar. If not, see <http://www.gnu.org/licenses/>.
  */
-package nl.meine.scouting.solparser;
+package nl.meine.scouting.solparser.sorter;
 
-import nl.meine.scouting.solparser.sorter.LeadersAndBestuurSorter;
-import nl.meine.scouting.solparser.writer.ExcelWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import nl.meine.scouting.solparser.entities.Person;
 
 /**
  *
  * @author Meine Toonen
  */
-public class Main {
-    
-    public static void main(String[] args) throws Throwable {
-        Parser p = new Parser("selectie_2871.csv", "aap.xls",new ExcelWriter(), new LeadersAndBestuurSorter());
-        p.init();
-        p.read();
-        p.write();
+public class LeadersAndBestuurSorter implements Sorter{
+
+    public Map<String, List<Person>> sort(List<Person> person) {
+        Map<String, List<Person>> sorted = new HashMap();
+        Sorter bestuur = new BestuurSorter();
+        Sorter leiding = new LeadersSorter();
+        sorted.putAll(bestuur.sort(person));
+        sorted.putAll(leiding.sort(person));
+        return sorted;
     }
     
 }
