@@ -92,9 +92,43 @@ public class Parser {
     }
 
     private void postProcessPersons() {
+        groupPersons();
         sortedPersons = sorter.sort(allPersons);
     }
 
+    private void groupPersons(){
+        Map<String, List<Person>> groupedPersons = new HashMap();
+        for (Person person : allPersons) {
+            if(!groupedPersons.containsKey(person.getLidnummer())){
+                groupedPersons.put(person.getLidnummer(), new ArrayList());
+            }
+            groupedPersons.get(person.getLidnummer()).add(person);
+        }
+        List<Person> newList = new ArrayList();
+        for (String lidnummer : groupedPersons.keySet()) {
+            List<Person> same = groupedPersons.get(lidnummer);
+            Person p = same.get(0);
+            if(same.size() >1){
+                String functie = p.getFunctie() + " (" + p.getSpeleenheid() + ")";
+                for(int i = 1 ; i< same.size();i++){
+                    Person per = same.get(i);
+                    functie += " / " +per.getFunctie() + " (" + per.getSpeleenheid() + ")";
+                    p.setSpeleenheid(concatIfNotExisting(p.getSpeleenheid(),per.getSpeleenheid()));
+                }
+                p.setFunctie(functie);
+            }
+            newList.add(p);
+        }
+        allPersons = newList;
+    }
+    
+    private String concatIfNotExisting(String value1, String value2){
+        if(value1.indexOf(value2) > 0 ){
+            value1 += " / " + value2;
+        }
+        return value1;
+    }
+    
     private Person createPerson(String[] row) {
 //"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
         Person p = new Person();
