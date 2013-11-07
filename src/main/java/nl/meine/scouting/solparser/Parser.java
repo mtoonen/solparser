@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
-import nl.meine.scouting.solparser.writer.ExcelWriter;
+import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.writer.SolWriter;
 
 /**
@@ -37,16 +37,18 @@ public class Parser {
 
     private File input;
     private File output;
-    private Map<String, List<Person>> sortedPersonsPerSpelenheid = new HashMap();
+    private Map<String, List<Person>> sortedPersons = new HashMap();
     private List<Person> allPersons = new ArrayList();
     
     private SolWriter writer;
+    private Sorter sorter;
     
-    public Parser(String inputFile, String outputFile, SolWriter writer) {
+    public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
         input = new File(inputFile);
         output = new File(outputFile);
         this.writer = writer;
         this.writer.setOutput(output);
+        this.sorter = sorter;
     }
 
     public void init() {
@@ -79,9 +81,9 @@ public class Parser {
     }
 
     public void write() throws Throwable {
-        if(writer != null && allPersons.size() > 0  && sortedPersonsPerSpelenheid.size() > 0){
+        if(writer != null && allPersons.size() > 0  && sortedPersons.size() > 0){
             writer.setAllPersons(allPersons);
-            writer.setSortedPersons(sortedPersonsPerSpelenheid);
+            writer.setSortedPersons(sortedPersons);
             writer.write();
             writer.finalize();
         }else{
@@ -90,13 +92,7 @@ public class Parser {
     }
 
     private void postProcessPersons() {
-        for (Person person : allPersons) {
-            String spelEenheid = person.getSpeleenheid();
-            if (!sortedPersonsPerSpelenheid.containsKey(spelEenheid)) {
-                sortedPersonsPerSpelenheid.put(spelEenheid, new ArrayList());
-            }
-            sortedPersonsPerSpelenheid.get(spelEenheid).add(person);
-        }
+        sortedPersons = sorter.sort(allPersons);
     }
 
     private Person createPerson(String[] row) {
