@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.entities.Person;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -52,7 +53,6 @@ public class ExcelWriter extends SolWriter{
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
     private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
-    private final String SHEET_NAME_ALL = "Allemaal";
     
     private File previous;
     
@@ -97,8 +97,8 @@ public class ExcelWriter extends SolWriter{
             sheet.autoSizeColumn(i);
         }
         processUpdates(sheet);
-        if(sheet.getSheetName().equals(SHEET_NAME_ALL)){
-            workbook.setSheetOrder(SHEET_NAME_ALL, 0);
+        if(sheet.getSheetName().equals(Parser.GROUP_NAME_ALL)){
+            workbook.setSheetOrder(Parser.GROUP_NAME_ALL, 0);
         }
     }
     
@@ -228,7 +228,7 @@ public class ExcelWriter extends SolWriter{
                 previousStream = new FileInputStream(previous);
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
-                Sheet prevSheet = prevWorkbook.getSheet(SHEET_NAME_ALL);
+                Sheet prevSheet = prevWorkbook.getSheet(Parser.GROUP_NAME_ALL);
                 for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
                     Row row = it.next();
                     if( row.getRowNum() > 0){

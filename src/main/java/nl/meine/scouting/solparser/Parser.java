@@ -35,6 +35,8 @@ import nl.meine.scouting.solparser.writer.SolWriter;
  */
 public class Parser {
 
+    public static final String GROUP_NAME_ALL = "Allemaal";
+    
     private File input;
     private File output;
     private Map<String, List<Person>> sortedPersons = new HashMap();
