@@ -52,11 +52,12 @@ public class ExcelWriter extends SolWriter{
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
-    private final short COLOR_OVERVLIEGER = IndexedColors.GREEN.index;
+    private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
     
     private File previous;
     
     private final static int NUM_LIDNUMMER_CELL = 0;
+    private final static int NUM_SPELTAK_CELL = 14;
     
     public ExcelWriter( ){
     }
@@ -281,21 +282,35 @@ public class ExcelWriter extends SolWriter{
     }
     
     private void processPersonUpdates( Row newRow, Row oldRow){
+        String newSpeltak = newRow.getCell(NUM_SPELTAK_CELL).getStringCellValue();
+        boolean isNew = oldRow == null;
+        boolean isOvervlieger = false;
+         if (!isNew) {
+            String previousSpeltak = oldRow.getCell(NUM_SPELTAK_CELL).getStringCellValue();;
+            if(!previousSpeltak.equals(newSpeltak)){
+                isOvervlieger = true;
+            }
+        }
+        
         for (Iterator<Cell> it = newRow.cellIterator(); it.hasNext();) {
             Cell newCell = it.next();
-            if(oldRow == null){
+            if(isNew){
                 updateCellColor(newCell, COLOR_NEW);
             }else{
                 int colIndex = newCell.getColumnIndex();
                 Cell oldCell = oldRow.getCell(colIndex);
                 String newValue = newCell.getStringCellValue();
                 String oldValue = oldCell.getStringCellValue();
-                if(!newValue.equals(oldValue)){
+                if(isOvervlieger){
+                    updateCellColor(newCell, COLOR_OVERVLIEGER);
+                }
+                if(!newValue.equals(oldValue) && colIndex != NUM_SPELTAK_CELL){
                     updateCellColor(newCell, COLOR_UPDATED);
                 }
             
             }
         }
+       
     }
     
     private void updateCellColor(Cell cell, short color){
