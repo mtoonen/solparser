@@ -26,8 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.meine.scouting.solparser.entities.Person;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -52,6 +50,9 @@ public class ExcelWriter extends SolWriter{
     private FileOutputStream out = null;
     private Workbook workbook;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
+    private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
+    private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
+    private final short COLOR_OVERVLIEGER = IndexedColors.GREEN.index;
     
     private File previous;
     
@@ -232,36 +233,38 @@ public class ExcelWriter extends SolWriter{
     }
     
     private boolean hasPrevious(){
-        return true;
+        return previous.exists();
     }
     
     private void processUpdates(Sheet sheet){
-        FileInputStream previousStream = null;
-        try {
-            previousStream = new FileInputStream(previous);
-            //Get the workbook instance for XLS file
-            HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
-            Sheet prevSheet = prevWorkbook.getSheet("Allemaal");
-            for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
-                Row row = it.next();
-                if( row.getRowNum() > 0){
-                    String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
-                    Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
-                    processPersonUpdates(row, previousRow);
-                }
-                
-            }
-        } catch (FileNotFoundException ex) {            
-            System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
-        } catch (IOException ex) {
-            System.err.println("Problems reading file: "+ ex.getLocalizedMessage());
-        } finally {
+        if(hasPrevious()){
+            FileInputStream previousStream = null;
             try {
-                if(previousStream != null){
-                    previousStream.close();
+                previousStream = new FileInputStream(previous);
+                //Get the workbook instance for XLS file
+                HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
+                Sheet prevSheet = prevWorkbook.getSheet("Allemaal");
+                for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
+                    Row row = it.next();
+                    if( row.getRowNum() > 0){
+                        String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+                        Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
+                        processPersonUpdates(row, previousRow);
+                    }
+
                 }
+            } catch (FileNotFoundException ex) {            
+                System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
             } catch (IOException ex) {
-                System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                System.err.println("Problems reading file: "+ ex.getLocalizedMessage());
+            } finally {
+                try {
+                    if(previousStream != null){
+                        previousStream.close();
+                    }
+                } catch (IOException ex) {
+                    System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                }
             }
         }
     }
@@ -280,19 +283,27 @@ public class ExcelWriter extends SolWriter{
     private void processPersonUpdates( Row newRow, Row oldRow){
         for (Iterator<Cell> it = newRow.cellIterator(); it.hasNext();) {
             Cell newCell = it.next();
-            int colIndex = newCell.getColumnIndex();
-            Cell oldCell = oldRow.getCell(colIndex);
-            String newValue = newCell.getStringCellValue();
-            String oldValue = oldCell.getStringCellValue();
-            if(!newValue.equals(oldValue)){
-                CellStyle style  = workbook.createCellStyle();;
-                style.cloneStyleFrom( newCell.getCellStyle());
-                style.setFillForegroundColor(IndexedColors.RED.index);
-                style.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
-                newCell.setCellStyle(style);
-            }
+            if(oldRow == null){
+                updateCellColor(newCell, COLOR_NEW);
+            }else{
+                int colIndex = newCell.getColumnIndex();
+                Cell oldCell = oldRow.getCell(colIndex);
+                String newValue = newCell.getStringCellValue();
+                String oldValue = oldCell.getStringCellValue();
+                if(!newValue.equals(oldValue)){
+                    updateCellColor(newCell, COLOR_UPDATED);
+                }
             
+            }
         }
+    }
+    
+    private void updateCellColor(Cell cell, short color){
+        CellStyle style = workbook.createCellStyle();;
+        style.cloneStyleFrom(cell.getCellStyle());
+        style.setFillForegroundColor(color);
+        style.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
+        cell.setCellStyle(style);
     }
     
     private void replacePrevious(File source){
