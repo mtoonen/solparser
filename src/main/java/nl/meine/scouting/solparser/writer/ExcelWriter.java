@@ -46,7 +46,6 @@ public class ExcelWriter extends SolWriter{
 
     private CellStyle headingStyle;
     private CellStyle normalStyle;
-    private CellStyle zebraStyle;
     private FileOutputStream out = null;
     private Workbook workbook;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
@@ -118,11 +117,8 @@ public class ExcelWriter extends SolWriter{
         for (int i = 0; i < NUM_ATTRIBUTES_PER_PERSON; i++) {
             Cell c = r.createCell(i);
             cells[i] = c;
-            if (index % 2 == 0) {
-                c.setCellStyle(zebraStyle);
-            } else {
-                c.setCellStyle(normalStyle);
-            }
+            c.setCellStyle(normalStyle);
+            
         }
 //        Lidnummer	Achternaam	tussenvoegsel	Roepnaam	Voorletters	geslacht	Adres	Huisnummer	Postcode	Woonplaats	
         cells[0].setCellValue(p.getLidnummer());
@@ -206,11 +202,6 @@ public class ExcelWriter extends SolWriter{
         normalStyle.setBorderRight(CellStyle.BORDER_THIN);
         Font f2 = workbook.createFont();
         normalStyle.setFont(f2);
-
-        zebraStyle = workbook.createCellStyle();
-        zebraStyle.cloneStyleFrom(normalStyle);
-        zebraStyle.setFillForegroundColor(IndexedColors.DARK_YELLOW.index);
-        zebraStyle.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
 
     }
     
