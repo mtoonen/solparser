@@ -26,16 +26,17 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class LeadersAndBestuurSorter extends OnlyAllSorter{
+public class LeadersAndBestuurSorter extends OnlyAllSorter {
 
-    public Map<String, List<Person>> sort(List<Person> person) {
+    public Map<String, List<Person>> sort(List<Person> person, boolean includeall) {
         Map<String, List<Person>> sorted = new HashMap();
-        sorted.putAll(super.sort(person));
+        if (includeall) {
+            sorted.putAll(super.sort(person, true));
+        }
         Sorter bestuur = new BestuurSorter();
         Sorter leiding = new LeadersSorter();
-        sorted.putAll(bestuur.sort(person));
-        sorted.putAll(leiding.sort(person));
+        sorted.putAll(bestuur.sort(person, false));
+        sorted.putAll(leiding.sort(person, false));
         return sorted;
     }
-    
 }

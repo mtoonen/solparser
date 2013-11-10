@@ -27,11 +27,13 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class UnitSorter extends OnlyAllSorter{
+public class UnitSorter extends OnlyAllSorter {
 
-    public Map<String, List<Person>> sort(List<Person> allPersons) {
+    public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> sortedPersons = new HashMap();
-        sortedPersons.putAll(super.sort(allPersons));
+        if (includeall) {
+            sortedPersons.putAll(super.sort(allPersons, true));
+        }
         for (Person person : allPersons) {
             String spelEenheid = person.getSpeleenheid();
             if (!sortedPersons.containsKey(spelEenheid)) {
@@ -41,5 +43,4 @@ public class UnitSorter extends OnlyAllSorter{
         }
         return sortedPersons;
     }
-    
 }

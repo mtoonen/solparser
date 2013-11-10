@@ -29,9 +29,11 @@ import nl.meine.scouting.solparser.entities.Person;
  */
 public class BestuurSorter extends OnlyAllSorter {
 
-    public Map<String, List<Person>> sort(List<Person> allPersons) {
+    public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> sorted = new HashMap();
-        sorted.putAll(super.sort(allPersons));
+        if(includeall){
+            sorted.putAll(super.sort(allPersons,true));
+        }
         List<Person> bestuur = new ArrayList();
         for (Person p : allPersons) {
             String speleenheid_soort = p.getSpeleenheid_soort();

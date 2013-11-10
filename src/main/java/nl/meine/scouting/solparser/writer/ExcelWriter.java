@@ -79,13 +79,12 @@ public class ExcelWriter extends SolWriter{
     public void write() {
         for (String sortKey : sortedPersons.keySet()) {
             Sheet sheet = workbook.createSheet(sortKey);
-            List<Person> personsPerEenheid = sortedPersons.get(sortKey);
+            List<Person> personList = sortedPersons.get(sortKey);
             createHeading(sheet);
-            for (int i = 0; i < personsPerEenheid.size(); i++) {
-                Person person = personsPerEenheid.get(i);
+            for (int i = 0; i < personList.size(); i++) {
+                Person person = personList.get(i);
                 Row r = createRow(person, sheet, i);
             }
-
             postProcessSheet(sheet);
         }
     }
@@ -97,6 +96,9 @@ public class ExcelWriter extends SolWriter{
             sheet.autoSizeColumn(i);
         }
         processUpdates(sheet);
+        if(sheet.getSheetName().equals("Allemaal")){
+            workbook.setSheetOrder("Allemaal", 0);
+        }
     }
     
      private Row createRow(Person p, Sheet sheet, int index) {

@@ -28,7 +28,7 @@ import nl.meine.scouting.solparser.entities.Person;
  */
 public class OnlyAllSorter implements Sorter{
 
-    public Map<String, List<Person>> sort(List<Person> allPersons) {
+    public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> all = new HashMap();
         all.put("Allemaal", allPersons);
         return all;

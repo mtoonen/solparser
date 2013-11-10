@@ -27,22 +27,23 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class LeadersSorter extends OnlyAllSorter{
+public class LeadersSorter extends OnlyAllSorter {
 
     @Override
-    public Map<String, List<Person>> sort(List<Person> allPersons) {
+    public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> sorted = new HashMap();
-        sorted.putAll(super.sort(allPersons));
+        if (includeall) {
+            sorted.putAll(super.sort(allPersons, true));
+        }
         List<Person> leaders = new ArrayList();
         for (Person p : allPersons) {
             String functie = p.getFunctie();
-            if(functie.equalsIgnoreCase("leid(st)er") || functie.equalsIgnoreCase("teamleid(st)er")){
+            if (functie.equalsIgnoreCase("leid(st)er") || functie.equalsIgnoreCase("teamleid(st)er")) {
                 leaders.add(p);
-                
+
             }
         }
         sorted.put("Leiding", leaders);
         return sorted;
     }
-    
 }

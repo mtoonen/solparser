@@ -93,7 +93,7 @@ public class Parser {
 
     private void postProcessPersons() {
         groupPersons();
-        sortedPersons = sorter.sort(allPersons);
+        sortedPersons = sorter.sort(allPersons,true);
     }
 
     private void groupPersons(){
