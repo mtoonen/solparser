@@ -59,7 +59,7 @@ public class Main {
             }
             Parser p = new Parser(input, output, writer, sorter);
             p.init();
-            p.read();
+            p.read(skipfirst);
             p.write();
         }
 

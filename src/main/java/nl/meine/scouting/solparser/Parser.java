@@ -55,13 +55,15 @@ public class Parser {
         writer.init();
     }
 
-    public void read() {
+    public void read(boolean skipfirst) {
         try {
             BufferedReader in = new BufferedReader(new FileReader(input));
             String str;
 
             // Skip first line
-            str = in.readLine();
+            if(skipfirst){
+                str = in.readLine();
+            }
             while ((str = in.readLine()) != null) {
                 if (str.isEmpty()) {
                     continue;
