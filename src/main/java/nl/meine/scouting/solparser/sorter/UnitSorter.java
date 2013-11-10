@@ -27,10 +27,11 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class UnitSorter implements Sorter {
+public class UnitSorter extends OnlyAllSorter{
 
     public Map<String, List<Person>> sort(List<Person> allPersons) {
         Map<String, List<Person>> sortedPersons = new HashMap();
+        sortedPersons.putAll(super.sort(allPersons));
         for (Person person : allPersons) {
             String spelEenheid = person.getSpeleenheid();
             if (!sortedPersons.containsKey(spelEenheid)) {

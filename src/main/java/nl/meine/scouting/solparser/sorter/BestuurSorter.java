@@ -27,10 +27,11 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class BestuurSorter implements Sorter {
+public class BestuurSorter extends OnlyAllSorter {
 
     public Map<String, List<Person>> sort(List<Person> allPersons) {
         Map<String, List<Person>> sorted = new HashMap();
+        sorted.putAll(super.sort(allPersons));
         List<Person> bestuur = new ArrayList();
         for (Person p : allPersons) {
             String speleenheid_soort = p.getSpeleenheid_soort();

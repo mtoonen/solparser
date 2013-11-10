@@ -27,10 +27,12 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class LeadersSorter implements Sorter{
+public class LeadersSorter extends OnlyAllSorter{
 
+    @Override
     public Map<String, List<Person>> sort(List<Person> allPersons) {
         Map<String, List<Person>> sorted = new HashMap();
+        sorted.putAll(super.sort(allPersons));
         List<Person> leaders = new ArrayList();
         for (Person p : allPersons) {
             String functie = p.getFunctie();

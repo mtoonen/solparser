@@ -77,16 +77,6 @@ public class ExcelWriter extends SolWriter{
 
     @Override
     public void write() {
-        
-        // Make sheet for all the persons
-       /* Sheet all = workbook.createSheet("Allemaal");
-        createHeading(all);
-        for (int i = 0; i < allPersons.size(); i++) {
-            Person person = allPersons.get(i);
-            createRow(person, all, i);
-        }
-        postProcessSheet(all);*/
-        // create a new sheet
         for (String sortKey : sortedPersons.keySet()) {
             Sheet sheet = workbook.createSheet(sortKey);
             List<Person> personsPerEenheid = sortedPersons.get(sortKey);

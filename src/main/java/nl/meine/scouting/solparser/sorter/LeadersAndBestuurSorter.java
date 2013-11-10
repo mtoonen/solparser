@@ -26,10 +26,11 @@ import nl.meine.scouting.solparser.entities.Person;
  *
  * @author Meine Toonen
  */
-public class LeadersAndBestuurSorter implements Sorter{
+public class LeadersAndBestuurSorter extends OnlyAllSorter{
 
     public Map<String, List<Person>> sort(List<Person> person) {
         Map<String, List<Person>> sorted = new HashMap();
+        sorted.putAll(super.sort(person));
         Sorter bestuur = new BestuurSorter();
         Sorter leiding = new LeadersSorter();
         sorted.putAll(bestuur.sort(person));
