@@ -21,6 +21,7 @@ import java.util.Properties;
 import nl.meine.scouting.solparser.sorter.BestuurSorter;
 import nl.meine.scouting.solparser.sorter.LeadersAndBestuurSorter;
 import nl.meine.scouting.solparser.sorter.LeadersSorter;
+import nl.meine.scouting.solparser.sorter.OnlyAllSorter;
 import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.UnitSorter;
 import nl.meine.scouting.solparser.writer.ExcelWriter;
@@ -36,7 +37,7 @@ public class Main {
             + "\t\t Usage: \n"
             + "\t\t\t-i \t Required: Name to input file. \n"
             + "\t\t\t-o \t Required: Name of the file to output. \n"
-            + "\t\t\t-s \t Optional (default is unit): Sorting options: which tabs should be created. Available options: leaders, bestuur, leadersandbestuur, unit \n"
+            + "\t\t\t-s \t Optional (default is unit): Sorting options: which tabs should be created. Available options: leaders, bestuur, leadersandbestuur, unit, onlyall \n"
             + "\t\t\t-ot \t Optional (default is excel): Which output should be generated. Available options: excel \n"
             + "\t\t\t-h \t Display this helptext. \n"
             + "\t\t\t-sf \t Optional (default true) Skip the first line of the csv value.";
@@ -101,8 +102,9 @@ public class Main {
             sorter = new UnitSorter();
         } else if (value.equalsIgnoreCase("bestuur")) {
             sorter = new BestuurSorter();
-        } else {
-
+        } else if(value.equalsIgnoreCase( "onlyall")){
+            sorter = new OnlyAllSorter();
+        }else {
             throw new IllegalArgumentException("Invalid sorter argument given: " + value);
         }
         return sorter;
