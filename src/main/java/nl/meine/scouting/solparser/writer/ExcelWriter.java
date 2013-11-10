@@ -52,6 +52,7 @@ public class ExcelWriter extends SolWriter{
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
     private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
+    private final String SHEET_NAME_ALL = "Allemaal";
     
     private File previous;
     
@@ -96,8 +97,8 @@ public class ExcelWriter extends SolWriter{
             sheet.autoSizeColumn(i);
         }
         processUpdates(sheet);
-        if(sheet.getSheetName().equals("Allemaal")){
-            workbook.setSheetOrder("Allemaal", 0);
+        if(sheet.getSheetName().equals(SHEET_NAME_ALL)){
+            workbook.setSheetOrder(SHEET_NAME_ALL, 0);
         }
     }
     
@@ -227,7 +228,7 @@ public class ExcelWriter extends SolWriter{
                 previousStream = new FileInputStream(previous);
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
-                Sheet prevSheet = prevWorkbook.getSheet("Allemaal");
+                Sheet prevSheet = prevWorkbook.getSheet(SHEET_NAME_ALL);
                 for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
                     Row row = it.next();
                     if( row.getRowNum() > 0){
