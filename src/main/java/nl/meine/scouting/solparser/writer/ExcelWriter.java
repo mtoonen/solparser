@@ -53,6 +53,10 @@ public class ExcelWriter extends SolWriter{
     private Workbook workbook;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
     
+    private File previous;
+    
+    private final static int NUM_LIDNUMMER_CELL = 0;
+    
     public ExcelWriter( ){
     }
 
@@ -64,6 +68,7 @@ public class ExcelWriter extends SolWriter{
             workbook = new HSSFWorkbook();
             createStyles();
 
+            previous = new File("data" + File.separator + "previous.xls");
         } catch (FileNotFoundException ex) {
             System.err.println("File Read Error" + ex.getLocalizedMessage());
         }
@@ -73,13 +78,13 @@ public class ExcelWriter extends SolWriter{
     public void write() {
         
         // Make sheet for all the persons
-        Sheet all = workbook.createSheet("Allemaal");
+       /* Sheet all = workbook.createSheet("Allemaal");
         createHeading(all);
         for (int i = 0; i < allPersons.size(); i++) {
             Person person = allPersons.get(i);
             createRow(person, all, i);
         }
-        postProcessSheet(all);
+        postProcessSheet(all);*/
         // create a new sheet
         for (String sortKey : sortedPersons.keySet()) {
             Sheet sheet = workbook.createSheet(sortKey);
@@ -100,6 +105,7 @@ public class ExcelWriter extends SolWriter{
         for (int i = 0; i < numcells; i++) {
             sheet.autoSizeColumn(i);
         }
+        processUpdates(sheet);
     }
     
      private Row createRow(Person p, Sheet sheet, int index) {
@@ -224,6 +230,71 @@ public class ExcelWriter extends SolWriter{
         }
         replacePrevious(output);
     }
+    
+    private boolean hasPrevious(){
+        return true;
+    }
+    
+    private void processUpdates(Sheet sheet){
+        FileInputStream previousStream = null;
+        try {
+            previousStream = new FileInputStream(previous);
+            //Get the workbook instance for XLS file
+            HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
+            Sheet prevSheet = prevWorkbook.getSheet("Allemaal");
+            for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
+                Row row = it.next();
+                if( row.getRowNum() > 0){
+                    String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+                    Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
+                    processPersonUpdates(row, previousRow);
+                }
+                
+            }
+        } catch (FileNotFoundException ex) {            
+            System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
+        } catch (IOException ex) {
+            System.err.println("Problems reading file: "+ ex.getLocalizedMessage());
+        } finally {
+            try {
+                if(previousStream != null){
+                    previousStream.close();
+                }
+            } catch (IOException ex) {
+                System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+            }
+        }
+    }
+    
+    private Row getPreviousLidRow(String lidnummer, Sheet sheet){
+        for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
+            Row row = it.next();
+            String oldLidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+            if(lidnummer.equals(oldLidnummer)){
+                return row;
+            }
+        }
+        return null;
+    }
+    
+    private void processPersonUpdates( Row newRow, Row oldRow){
+        for (Iterator<Cell> it = newRow.cellIterator(); it.hasNext();) {
+            Cell newCell = it.next();
+            int colIndex = newCell.getColumnIndex();
+            Cell oldCell = oldRow.getCell(colIndex);
+            String newValue = newCell.getStringCellValue();
+            String oldValue = oldCell.getStringCellValue();
+            if(!newValue.equals(oldValue)){
+                CellStyle style  = workbook.createCellStyle();;
+                style.cloneStyleFrom( newCell.getCellStyle());
+                style.setFillForegroundColor(IndexedColors.RED.index);
+                style.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
+                newCell.setCellStyle(style);
+            }
+            
+        }
+    }
+    
     private void replacePrevious(File source){
         InputStream in = null;
         try {
@@ -231,17 +302,16 @@ public class ExcelWriter extends SolWriter{
             if(!dataDir.exists()){
                 dataDir.mkdir();
             }
-            File target = new File("data" + File.separator + "previous.xls");
             in = new FileInputStream(source);
-            OutputStream out = new FileOutputStream(target);
+            OutputStream prevOut = new FileOutputStream(previous);
             // Copy the bits from instream to outstream
             byte[] buf = new byte[4096];
             int len;
             while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
+                prevOut.write(buf, 0, len);
             }
             in.close();
-            out.close();
+            prevOut.close();
         } catch (FileNotFoundException ex) {
             System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
         } catch (IOException ex) {
@@ -252,7 +322,7 @@ public class ExcelWriter extends SolWriter{
                     in.close();
                 }
             } catch (IOException ex) {
-                System.err.println("Problems locating file: "+ ex.getLocalizedMessage());
+                System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
             }
         }
     }

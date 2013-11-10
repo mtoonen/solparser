@@ -48,7 +48,7 @@ public class Main {
             
             System.out.println(HELP_TEXT);
         } else {
-            //-s bestuur -ot excel -sf true -i selectie_2871.csv -o aap.xls
+            //-s onlyall -ot excel -sf true -i selectie_2871.csv -o aap.xls
             Sorter sorter = getSorter(prop.getProperty("sorter"));
             SolWriter writer = getWriter(prop.getProperty("outputtype"));
             boolean skipfirst = prop.getProperty("skipfirst") == null ? true : Boolean.parseBoolean(prop.getProperty("skipfirst"));
