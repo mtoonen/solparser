@@ -43,7 +43,7 @@ public class LeadersSorter extends OnlyAllSorter {
 
             }
         }
-        sorted.put("Leiding", leaders);
+        sorted.put("Speltakleiding", leaders);
         return sorted;
     }
 }
