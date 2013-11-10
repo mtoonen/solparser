@@ -23,6 +23,7 @@ import nl.meine.scouting.solparser.sorter.LeadersAndBestuurSorter;
 import nl.meine.scouting.solparser.sorter.LeadersSorter;
 import nl.meine.scouting.solparser.sorter.OnlyAllSorter;
 import nl.meine.scouting.solparser.sorter.Sorter;
+import nl.meine.scouting.solparser.sorter.SorterFactory;
 import nl.meine.scouting.solparser.sorter.UnitSorter;
 import nl.meine.scouting.solparser.writer.ExcelWriter;
 import nl.meine.scouting.solparser.writer.SolWriter;
@@ -49,7 +50,7 @@ public class Main {
             System.out.println(HELP_TEXT);
         } else {
             //-s onlyall -ot excel -sf true -i selectie_2871.csv -o aap.xls
-            Sorter sorter = getSorter(prop.getProperty("sorter"));
+            Sorter sorter = SorterFactory.createSorter(prop.getProperty("sorter"));
             SolWriter writer = getWriter(prop.getProperty("outputtype"));
             boolean skipfirst = prop.getProperty("skipfirst") == null ? true : Boolean.parseBoolean(prop.getProperty("skipfirst"));
             String input = prop.getProperty("input");
@@ -88,26 +89,6 @@ public class Main {
             }
         }
         return prop;
-    }
-
-    public static Sorter getSorter(String value) {
-        Sorter sorter = null;
-        if (value == null) {
-            sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase("leaders")) {
-            sorter = new LeadersSorter();
-        } else if (value.equalsIgnoreCase("leadersandbestuur")) {
-            sorter = new LeadersAndBestuurSorter();
-        } else if (value.equalsIgnoreCase("unit")) {
-            sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase("bestuur")) {
-            sorter = new BestuurSorter();
-        } else if(value.equalsIgnoreCase( "onlyall")){
-            sorter = new OnlyAllSorter();
-        }else {
-            throw new IllegalArgumentException("Invalid sorter argument given: " + value);
-        }
-        return sorter;
     }
 
     public static SolWriter getWriter(String value) {
