@@ -17,11 +17,17 @@
  */
 package nl.meine.scouting.solparser.writer;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.meine.scouting.solparser.entities.Person;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -216,7 +222,39 @@ public class ExcelWriter extends SolWriter{
                 }
             }
         }
+        replacePrevious(output);
     }
-    
+    private void replacePrevious(File source){
+        InputStream in = null;
+        try {
+            File dataDir = new File("data");
+            if(!dataDir.exists()){
+                dataDir.mkdir();
+            }
+            File target = new File("data" + File.separator + "previous.xls");
+            in = new FileInputStream(source);
+            OutputStream out = new FileOutputStream(target);
+            // Copy the bits from instream to outstream
+            byte[] buf = new byte[4096];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        } catch (FileNotFoundException ex) {
+            System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
+        } catch (IOException ex) {
+            System.err.println("Problems writing file: "+ ex.getLocalizedMessage());
+        } finally {
+            try {
+                if(in != null){
+                    in.close();
+                }
+            } catch (IOException ex) {
+                System.err.println("Problems locating file: "+ ex.getLocalizedMessage());
+            }
+        }
+    }
     
 }
