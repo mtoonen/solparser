@@ -1,3 +1,5 @@
+[![Stories in Ready](https://badge.waffle.io/mtoonen/solparser.png?label=ready)](https://waffle.io/mtoonen/solparser)  
+[![Stories in Ready](https://badge.waffle.io/mtoonen/solparser.png?label=ready)](https://waffle.io/mtoonen/solparser)  
 solparser
 =========
 
