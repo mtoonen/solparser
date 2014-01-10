@@ -73,7 +73,7 @@ public class Parser {
                     continue;
                 }
                 str = str.replaceAll("\"", "");
-                String[] ar = str.split(";");
+                String[] ar = str.split("\t");
                 Person p = createPerson(ar);
 
                 allPersons.add(p);
@@ -209,11 +209,10 @@ public class Parser {
             
             //"Speleenheid soort";"Speleenheid";"Organisatienummer";"Organisatie categorie";"Organisatie";"Organisatie plaats"
            
-            p.setSpeleenheid_soort(row[22]);
-            String speleenheid = row[23];
+            p.setSpeleenheid_soort(row[27]);
+            String speleenheid = row[28];
             speleenheid = speleenheid.replaceAll("/", "-");
             p.setSpeleenheid(speleenheid);
-            p.setSpeleenheidnummer(row[24]);
         }
         return p;
     }

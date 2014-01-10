@@ -49,7 +49,7 @@ public class ExcelWriter extends SolWriter{
     private CellStyle normalStyle;
     private FileOutputStream out = null;
     private Workbook workbook;
-    private static final int NUM_ATTRIBUTES_PER_PERSON = 18;
+    private static final int NUM_ATTRIBUTES_PER_PERSON = 24;
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
     private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
@@ -57,7 +57,7 @@ public class ExcelWriter extends SolWriter{
     private File previous;
     
     private final static int NUM_LIDNUMMER_CELL = 0;
-    private final static int NUM_SPELTAK_CELL = 14;
+    private final static int NUM_SPELTAK_CELL = 19;
     
     public ExcelWriter( ){
     }
@@ -132,11 +132,17 @@ public class ExcelWriter extends SolWriter{
         cells[10].setCellValue(p.getLid_telefoon());
         cells[11].setCellValue(p.getLid_mobiel());
         cells[12].setCellValue(p.getLid_mailadres());
-        cells[13].setCellValue(p.getLid_mailadres_ouder_verzorger());
-        cells[14].setCellValue(p.getSpeleenheid());
-        cells[15].setCellValue(p.getFunctie());
-        cells[16].setCellValue(p.getLid_geboortedatum());
-        cells[17].setCellValue(p.getFunctie_startdatum());
+        cells[13].setCellValue(p.getLid_naam_ouder_verzorger());
+        cells[14].setCellValue(p.getLid_mailadres_ouder_verzorger());
+        cells[15].setCellValue(p.getLid_telefoonnummer_ouder_verzorger());
+        cells[16].setCellValue(p.getLid_naam_ouder_verzorger_2());
+        cells[17].setCellValue(p.getLid_mailadres_ouder_verzorger_2());
+        cells[18].setCellValue(p.getLid_telefoonnummer_ouder_verzorger_2());
+        cells[19].setCellValue(p.getSpeleenheid());
+        cells[20].setCellValue(p.getFunctie());
+        cells[21].setCellValue(p.getLid_geboortedatum());
+        cells[22].setCellValue(p.getFunctie_startdatum());
+        cells[23].setCellValue(p.getOverige_informatie());
 
         return r;
     }
@@ -156,11 +162,17 @@ public class ExcelWriter extends SolWriter{
         r.createCell(10).setCellValue("Telefoonnummer");
         r.createCell(11).setCellValue("Mobiel");
         r.createCell(12).setCellValue("Mail lid");
-        r.createCell(13).setCellValue("Mail ouder/verzorger");
-        r.createCell(14).setCellValue("Speltak");
-        r.createCell(15).setCellValue("Functie");
-        r.createCell(16).setCellValue("Geboortedatum");
-        r.createCell(17).setCellValue("Functie startdatm");
+        r.createCell(13).setCellValue("Naam ouder/verzorger 1");
+        r.createCell(14).setCellValue("Mail ouder/verzorger 1");
+        r.createCell(15).setCellValue("Telefoonnummer ouder/verzorger 1");
+        r.createCell(16).setCellValue("Naam ouder/verzorger 2");
+        r.createCell(17).setCellValue("Mail ouder/verzorger 2");
+        r.createCell(18).setCellValue("Telefoonnummer ouder/verzorger 2");
+        r.createCell(19).setCellValue("Speltak");
+        r.createCell(20).setCellValue("Functie");
+        r.createCell(21).setCellValue("Geboortedatum");
+        r.createCell(22).setCellValue("Functie startdatum");
+        r.createCell(23).setCellValue("Overige informatie");
 
         Iterator<Cell> it = r.cellIterator();
         while (it.hasNext()) {
