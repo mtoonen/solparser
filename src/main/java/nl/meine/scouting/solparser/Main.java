@@ -18,13 +18,8 @@
 package nl.meine.scouting.solparser;
 
 import java.util.Properties;
-import nl.meine.scouting.solparser.sorter.BestuurSorter;
-import nl.meine.scouting.solparser.sorter.LeadersAndBestuurSorter;
-import nl.meine.scouting.solparser.sorter.LeadersSorter;
-import nl.meine.scouting.solparser.sorter.OnlyAllSorter;
 import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
-import nl.meine.scouting.solparser.sorter.UnitSorter;
 import nl.meine.scouting.solparser.writer.ExcelWriter;
 import nl.meine.scouting.solparser.writer.SolWriter;
 

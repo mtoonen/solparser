@@ -45,6 +45,8 @@ public class Parser {
     private SolWriter writer;
     private Sorter sorter;
     
+    private int type = 1216;
+    
     public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
         input = new File(inputFile);
         output = new File(outputFile);
@@ -134,42 +136,85 @@ public class Parser {
     }
     
     private Person createPerson(String[] row) {
-//"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
         Person p = new Person();
-        p.setLidnummer(row[0]);
-        p.setLid_voornaam(row[1]);
-        p.setLid_initialen(row[2]);
-        p.setLid_tussenvoegsel(row[3]);
-        p.setLid_achternaam(row[4]);
-        p.setLid_straat(row[5]);
-        p.setLid_huisnummer(row[6]);
-        p.setLid_toevoegsel_huisnr(row[7]);
-        p.setLid_postcode(row[8]);
+        if (type == 2871) {
+//"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
+
+            p.setLidnummer(row[0]);
+            p.setLid_voornaam(row[1]);
+            p.setLid_initialen(row[2]);
+            p.setLid_tussenvoegsel(row[3]);
+            p.setLid_achternaam(row[4]);
+            p.setLid_straat(row[5]);
+            p.setLid_huisnummer(row[6]);
+            p.setLid_toevoegsel_huisnr(row[7]);
+            p.setLid_postcode(row[8]);
 //"lid postcode";"lid plaats";"lid land";"lid mailadres";"Lid mailadres ouder/verzorger";"Lid geslacht";"lid geboortedatum";"lid mobiel";
-        p.setLid_plaats(row[9]);
-        p.setLid_land(row[10]);
-        p.setLid_mailadres(row[11]);
-        p.setLid_mailadres_ouder_verzorger(row[12]);
-        p.setLid_geslacht(row[13]);
-        p.setLid_geboortedatum(row[14]);
-        p.setLid_mobiel(row[15]);
+            p.setLid_plaats(row[9]);
+            p.setLid_land(row[10]);
+            p.setLid_mailadres(row[11]);
+            p.setLid_mailadres_ouder_verzorger(row[12]);
+            p.setLid_geslacht(row[13]);
+            p.setLid_geboortedatum(row[14]);
+            p.setLid_mobiel(row[15]);
 //"lid telefoon";"functie";"functie startdatum";"Functie status";"Functienummer";"Functietype";"speleenheid soort";"speleenheid";"Speleenheidnummer"
-        p.setLid_telefoon(row[16]);
-        p.setFunctie(row[17]);
-        p.setFunctie_startdatum(row[18]);
-        p.setFunctie_status(row[19]);
-        p.setFunctienummer(row[20]);
-        p.setFunctietype(row[21]);
-        p.setSpeleenheid_soort(row[22]);
-        String speleenheid = row[23];
-        speleenheid = speleenheid.replaceAll("/", "-");
-        p.setSpeleenheid(speleenheid);
-        p.setSpeleenheidnummer(row[24]);
+            p.setLid_telefoon(row[16]);
+            p.setFunctie(row[17]);
+            p.setFunctie_startdatum(row[18]);
+            p.setFunctie_status(row[19]);
+            p.setFunctienummer(row[20]);
+            p.setFunctietype(row[21]);
+            p.setSpeleenheid_soort(row[22]);
+            String speleenheid = row[23];
+            speleenheid = speleenheid.replaceAll("/", "-");
+            p.setSpeleenheid(speleenheid);
+            p.setSpeleenheidnummer(row[24]);
 //;"organisatienummer";"organisatie categorie";"organisatie";"organisatie plaats"
-        p.setOrganisatienummer(row[25]);
-        p.setOrganisatie_categorie(row[26]);
-        p.setOrganisatie(row[27]);
-        p.setOrganisatie_plaats(row[28]);
+            p.setOrganisatienummer(row[25]);
+            p.setOrganisatie_categorie(row[26]);
+            p.setOrganisatie(row[27]);
+            p.setOrganisatie_plaats(row[28]);
+        } else if(type == 1216){
+            //"Lidnummer";"Lid voornaam";"Lid initialen";"Lid tussenvoegsel";"Lid achternaam";"Lid volledige naam";"Lid straat";"Lid huisnummer"
+            p.setLidnummer(row[0]);
+            p.setLid_voornaam(row[1]);
+            p.setLid_initialen(row[2]);
+            p.setLid_tussenvoegsel(row[3]);
+            p.setLid_achternaam(row[4]);
+            p.setLid_straat(row[6]);
+            p.setLid_huisnummer(row[7]);
+            //;"Lid toevoegsel huisnr";"Lid postcode";"Lid plaats";"Lid land";"Lid geboortedatum";"Lid geslacht";"Lid telefoon";"Lid mobiel";"Lid mailadres";
+            p.setLid_toevoegsel_huisnr(row[8]);
+            p.setLid_postcode(row[9]);
+            p.setLid_plaats(row[10]);
+            p.setLid_land(row[11]);
+            p.setLid_geboortedatum(row[12]);
+            p.setLid_geslacht(row[13]);
+            p.setLid_telefoon(row[14]);
+            p.setLid_mobiel(row[15]);
+            p.setLid_mailadres(row[16]);
+            //"Lid naam ouder/verzorger 1";"Lid mailadres ouder/verzorger 1";"Lid telefoonnummer ouder/verzorger 1";"Lid naam ouder/verzorger 2";
+            p.setLid_naam_ouder_verzorger(row[17]);
+            p.setLid_mailadres_ouder_verzorger(row[18]);
+            p.setLid_telefoonnummer_ouder_verzorger(row[19]);
+            
+            p.setLid_naam_ouder_verzorger_2(row[20]);
+            //"Lid mailadres ouder/verzorger 2";"Lid telefoonnummer ouder/verzorger 2";"Overige informatie";"Functie";"Functie status";"Functie startdatum";
+            p.setLid_mailadres_ouder_verzorger_2(row[21]);
+            p.setLid_telefoonnummer_ouder_verzorger_2(row[22]);
+            p.setOverige_informatie(row[23]);
+            p.setFunctie(row[24]);
+            p.setFunctie_status(row[25]);
+            p.setFunctie_startdatum(row[26]);
+            
+            //"Speleenheid soort";"Speleenheid";"Organisatienummer";"Organisatie categorie";"Organisatie";"Organisatie plaats"
+           
+            p.setSpeleenheid_soort(row[22]);
+            String speleenheid = row[23];
+            speleenheid = speleenheid.replaceAll("/", "-");
+            p.setSpeleenheid(speleenheid);
+            p.setSpeleenheidnummer(row[24]);
+        }
         return p;
     }
 }

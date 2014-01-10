@@ -36,6 +36,8 @@ public class Person {
     private String lid_land;
     private String lid_mailadres;
     private String lid_mailadres_ouder_verzorger;
+    private String lid_naam_ouder_verzorger;
+    private String lid_telefoonnummer_ouder_verzorger;
     private String lid_geslacht;
     private String lid_geboortedatum;
     private String lid_mobiel;
@@ -52,10 +54,13 @@ public class Person {
     private String organisatie_categorie;
     private String organisatie;
     private String organisatie_plaats;
-    
-       
-    public Person(){
-        
+    private String lid_naam_ouder_verzorger_2;
+    private String lid_mailadres_ouder_verzorger_2;
+    private String lid_telefoonnummer_ouder_verzorger_2;
+
+    private String overige_informatie;
+
+    public Person() {
     }
 
     public String getLidnummer() {
@@ -290,5 +295,52 @@ public class Person {
         this.organisatie_plaats = organisatie_plaats;
     }
 
+    public String getLid_naam_ouder_verzorger_2() {
+        return lid_naam_ouder_verzorger_2;
+    }
+
+    public void setLid_naam_ouder_verzorger_2(String lid_naam_ouder_verzorger_2) {
+        this.lid_naam_ouder_verzorger_2 = lid_naam_ouder_verzorger_2;
+    }
+
+    public String getLid_mailadres_ouder_verzorger_2() {
+        return lid_mailadres_ouder_verzorger_2;
+    }
+
+    public void setLid_mailadres_ouder_verzorger_2(String lid_mailadres_ouder_verzorger_2) {
+        this.lid_mailadres_ouder_verzorger_2 = lid_mailadres_ouder_verzorger_2;
+    }
+
+    public String getLid_telefoonnummer_ouder_verzorger_2() {
+        return lid_telefoonnummer_ouder_verzorger_2;
+    }
+
+    public void setLid_telefoonnummer_ouder_verzorger_2(String lid_telefoonnummer_ouder_verzorger_2) {
+        this.lid_telefoonnummer_ouder_verzorger_2 = lid_telefoonnummer_ouder_verzorger_2;
+    }
+
+    public String getLid_naam_ouder_verzorger() {
+        return lid_naam_ouder_verzorger;
+    }
+
+    public void setLid_naam_ouder_verzorger(String lid_naam_ouder_verzorger) {
+        this.lid_naam_ouder_verzorger = lid_naam_ouder_verzorger;
+    }
+
+    public String getLid_telefoonnummer_ouder_verzorger() {
+        return lid_telefoonnummer_ouder_verzorger;
+    }
+
+    public void setLid_telefoonnummer_ouder_verzorger(String lid_telefoonummer_ouder_verzorger) {
+        this.lid_telefoonnummer_ouder_verzorger = lid_telefoonummer_ouder_verzorger;
+    }
+
+    public String getOverige_informatie() {
+        return overige_informatie;
+    }
+
+    public void setOverige_informatie(String overige_informatie) {
+        this.overige_informatie = overige_informatie;
+    }
     
 }
