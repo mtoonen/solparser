@@ -2,4 +2,4 @@
 =========
 
 Parser for scouting online. Takes an export from Scouts Online, and transforms it into a handy Excel sheet.
-Use export with id 2871: Leden: Alle actieve leden van eigen organisatie met hun functies (2871) , with Comma Seperated File and semicolon (;) as seperator.
+Use export with id 1216: Leden: Alle leden van eigen en onderliggende organisaties, inclusief relaties , with Tab Seperated File and semicolon as seperator and disable grouping.
