@@ -21,7 +21,7 @@ package nl.meine.scouting.solparser.entities;
  *
  * @author Meine Toonen <toonen.meine@gmail.com>
  */
-public class Person {
+public class Person implements Comparable{
  
     private String lidnummer;
     private String lid_voornaam;
@@ -342,5 +342,9 @@ public class Person {
     public void setOverige_informatie(String overige_informatie) {
         this.overige_informatie = overige_informatie;
     }
-    
+
+    public int compareTo(Object t) {
+        Person other = (Person)t;
+        return this.getLid_achternaam().compareToIgnoreCase(other.getLid_achternaam());
+    }
 }
