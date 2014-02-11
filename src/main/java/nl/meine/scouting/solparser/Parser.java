@@ -116,14 +116,12 @@ public class Parser {
         for (String lidnummer : groupedPersons.keySet()) {
             List<Person> same = groupedPersons.get(lidnummer);
             Person p = same.get(0);
+            p.addFunctie(p.getSingleSpeleenheid(),p.getSingleFunctie());
             if(same.size() >1){
-                String functie = p.getFunctie() + " (" + p.getSpeleenheid() + ")";
                 for(int i = 1 ; i< same.size();i++){
                     Person per = same.get(i);
-                    functie += " / " +per.getFunctie() + " (" + per.getSpeleenheid() + ")";
-                    p.setSpeleenheid(concatIfNotExisting(p.getSpeleenheid(),per.getSpeleenheid()));
+                    p.addFunctie(per.getSingleSpeleenheid(),per.getSingleFunctie());
                 }
-                p.setFunctie(functie);
             }
             newList.add(p);
         }

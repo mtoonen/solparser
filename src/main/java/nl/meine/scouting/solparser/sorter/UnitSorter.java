@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nl.meine.scouting.solparser.entities.Person;
 
 /**
@@ -35,11 +36,15 @@ public class UnitSorter extends OnlyAllSorter {
             sortedPersons.putAll(super.sort(allPersons, true));
         }
         for (Person person : allPersons) {
-            String spelEenheid = person.getSpeleenheid();
-            if (!sortedPersons.containsKey(spelEenheid)) {
-                sortedPersons.put(spelEenheid, new ArrayList());
+            Set<String> speleenheden = person.getSpeleenheid();
+            for (String spelEenheid : speleenheden) {
+
+                if (!sortedPersons.containsKey(spelEenheid)) {
+                    sortedPersons.put(spelEenheid, new ArrayList());
+                }
+                sortedPersons.get(spelEenheid).add(person);
+
             }
-            sortedPersons.get(spelEenheid).add(person);
         }
         return sortedPersons;
     }

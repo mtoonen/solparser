@@ -17,6 +17,11 @@
  */
 package nl.meine.scouting.solparser.entities;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  *
  * @author Meine Toonen <toonen.meine@gmail.com>
@@ -59,6 +64,8 @@ public class Person implements Comparable{
     private String lid_telefoonnummer_ouder_verzorger_2;
 
     private String overige_informatie;
+    
+    private List<Functie> functies = new ArrayList();
 
     public Person() {
     }
@@ -198,9 +205,20 @@ public class Person implements Comparable{
     public void setLid_telefoon(String lid_telefoon) {
         this.lid_telefoon = lid_telefoon;
     }
+    
+    public String getSingleFunctie(){
+        return this.functie;
+    }
 
     public String getFunctie() {
-        return functie;
+        String f = "";
+        for (Functie func : functies) {
+            if(!f.isEmpty()){
+                f += " / ";
+            }
+            f += func.toString();
+        }
+        return f;
     }
 
     public void setFunctie(String functie) {
@@ -247,10 +265,29 @@ public class Person implements Comparable{
         this.speleenheid_soort = speleenheid_soort;
     }
 
-    public String getSpeleenheid() {
+    public String getSingleSpeleenheid() {
         return speleenheid;
     }
+    
+    public String getAggregatedSpeleenheid(){
+        String s = "";
+        for (Functie f : functies) {
+            if(!s.isEmpty()){
+                s+= ", ";
+            }
+            s += f.getSpeltak();
+        }
+        return s;
+    }
 
+    public Set<String> getSpeleenheid(){
+        Set<String> speleenheden = new HashSet();
+        for (Functie func : functies) {
+            speleenheden.add(func.getSpeltak());
+        }
+        return speleenheden;
+    }
+    
     public void setSpeleenheid(String speleenheid) {
         this.speleenheid = speleenheid;
     }
@@ -346,5 +383,17 @@ public class Person implements Comparable{
     public int compareTo(Object t) {
         Person other = (Person)t;
         return this.getLid_achternaam().compareToIgnoreCase(other.getLid_achternaam());
+    }
+
+    public List<Functie> getFuncties() {
+        return functies;
+    }
+
+    public void setFuncties(List<Functie> functies) {
+        this.functies = functies;
+    }
+    
+    public void addFunctie(String speltak, String functie){
+        functies.add(new Functie(speltak, functie));
     }
 }

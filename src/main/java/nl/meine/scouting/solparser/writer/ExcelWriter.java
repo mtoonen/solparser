@@ -138,7 +138,7 @@ public class ExcelWriter extends SolWriter{
         cells[16].setCellValue(p.getLid_naam_ouder_verzorger_2());
         cells[17].setCellValue(p.getLid_mailadres_ouder_verzorger_2());
         cells[18].setCellValue(p.getLid_telefoonnummer_ouder_verzorger_2());
-        cells[19].setCellValue(p.getSpeleenheid());
+        cells[19].setCellValue(p.getAggregatedSpeleenheid());
         cells[20].setCellValue(p.getFunctie());
         cells[21].setCellValue(p.getLid_geboortedatum());
         cells[22].setCellValue(p.getFunctie_startdatum());
