@@ -216,6 +216,8 @@ public class Parser {
             p.setFunctie(row[24]);
             p.setFunctie_status(row[25]);
             p.setFunctie_startdatum(row[26]);
+            p.setOrganisatie(row[31]);
+            p.setOrganisatie_plaats(row[32]);
             
             //"Speleenheid soort";"Speleenheid";"Organisatienummer";"Organisatie categorie";"Organisatie";"Organisatie plaats"
            
