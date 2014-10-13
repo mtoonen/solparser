@@ -75,9 +75,7 @@ public class ParserTest{
         assertEquals("Groepsbestuur (Groepsbestuur)", p.getFunctie());
         assertEquals("2011-07-17", p.getFunctie_startdatum());
         assertEquals("Actief", p.getFunctie_status());
-        //assertEquals("", p.getFunctienummer());
         assertEquals(1, p.getFuncties().size());
-      //  assertEquals("", p.getFunctietype());
         assertEquals("Man", p.getLid_geslacht());
         assertEquals("1", p.getLid_huisnummer());
         assertEquals("J", p.getLid_initialen());
@@ -99,18 +97,18 @@ public class ParserTest{
         assertEquals("16", p.getLidnummer());
         assertEquals("Jan van Hoof-groep", p.getOrganisatie());
         assertEquals("Gouda", p.getOrganisatie_plaats());
-        assertEquals("Waanideeen over zangkunsten", p.getOverige_informatie());
-       /*assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());
-        assertEquals("", p.get());*/
+        assertEquals("Waanideeen over zangkunsten", p.getOverige_informatie());       
+        
+        
+        File onePersonTwoFunctions = getResource("onepersontwofunctionswithheader.csv");
+        parser = new Parser(onePersonTwoFunctions);
+        parser.read(true);
+        assertTrue(parser.getAllPersons().size() == 1);
+
+        p = parser.getAllPersons().get(0);
+        assertEquals("Groepsbestuur, Groepsbestuur", p.getAggregatedSpeleenheid());
+        assertEquals(1, p.getSpeleenheid().size());
+        assertEquals(2, p.getFuncties().size());
         
     }
     
