@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import nl.meine.scouting.solparser.entities.Functie;
 import nl.meine.scouting.solparser.entities.Person;
 
 /**
@@ -37,10 +38,11 @@ public class LeadersSorter extends OnlyAllSorter {
         }
         List<Person> leaders = new ArrayList();
         for (Person p : allPersons) {
-            String functie = p.getFunctie();
-            if (functie.equalsIgnoreCase("leid(st)er") || functie.equalsIgnoreCase("teamleid(st)er")) {
-                leaders.add(p);
-
+            for (Functie functieObj : p.getFuncties()) {
+                String functie = functieObj.getFunctie();
+                if (functie.equalsIgnoreCase("leid(st)er") || functie.equalsIgnoreCase("teamleid(st)er")) {
+                    leaders.add(p);
+                }
             }
         }
         sorted.put("Speltakleiding", leaders);
