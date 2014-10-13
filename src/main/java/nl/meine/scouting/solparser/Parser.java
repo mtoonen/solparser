@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.Sorter;
+import nl.meine.scouting.solparser.sorter.SorterFactory;
 import nl.meine.scouting.solparser.writer.SolWriter;
 
 /**
@@ -47,6 +48,15 @@ public class Parser {
     private Sorter sorter;
     
     private int type = 1216;
+    
+    public Parser(){
+        
+    }
+    
+    public Parser(File input){
+        this.input = input;
+        this.sorter = SorterFactory.createSorter("onlyall");
+    }
     
     public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
         input = new File(inputFile);
@@ -135,7 +145,7 @@ public class Parser {
         return value1;
     }
     
-    private Person createPerson(String[] row) {
+    public Person createPerson(String[] row) {
         Person p = new Person();
         if (type == 2871) {
 //"lidnummer";"lid voornaam";"lid initialen";"lid tussenvoegsel";"lid achternaam";"lid straat";"lid huisnummer";"lid toevoegsel huisnr";
@@ -216,4 +226,12 @@ public class Parser {
         }
         return p;
     }
+
+    public Map<String, List<Person>> getSortedPersons() {
+        return sortedPersons;
+    }
+
+    public List<Person> getAllPersons() {
+        return allPersons;
+    }  
 }
