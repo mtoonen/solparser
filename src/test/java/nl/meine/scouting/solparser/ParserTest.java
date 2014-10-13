@@ -104,12 +104,18 @@ public class ParserTest{
         parser = new Parser(onePersonTwoFunctions);
         parser.read(true);
         assertTrue(parser.getAllPersons().size() == 1);
-
         p = parser.getAllPersons().get(0);
         assertEquals("Groepsbestuur, Groepsbestuur", p.getAggregatedSpeleenheid());
         assertEquals(1, p.getSpeleenheid().size());
         assertEquals(2, p.getFuncties().size());
         
+        
+        File onePersonTwoUnits = getResource("onepersontwounitswithheader.csv");
+        parser = new Parser(onePersonTwoUnits);
+        parser.read(true);
+        assertTrue(parser.getAllPersons().size() == 1);
+        p = parser.getAllPersons().get(0);
+        assertEquals("Groepsbestuur, Groepsbestuur2", p.getAggregatedSpeleenheid() );
     }
     
     public File getResource(String name) throws URISyntaxException {
