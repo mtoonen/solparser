@@ -124,6 +124,14 @@ public class ParserTest{
         assertEquals("Groepsbestuur, Groepsbestuur2", p.getAggregatedSpeleenheid() );
     }
     
+    @Test
+    public void testParserMultiPersons() throws URISyntaxException{
+        File twopersons = getResource("twopersons.csv");
+        parser = new Parser(twopersons);
+        parser.read(true);
+        assertEquals(2, parser.getAllPersons().size());
+    }
+    
     public File getResource(String name) throws URISyntaxException {
         File file = null;
 
