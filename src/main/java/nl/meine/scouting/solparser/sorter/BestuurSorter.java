@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Meine Toonen
+ *  Copyright (C) 2013-2014 Meine Toonen
  *  This file is part of the SolParser library.
  *
  *  The SolParser librar is free software: you can redistribute it and/or modify
