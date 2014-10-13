@@ -54,7 +54,7 @@ public class Parser {
     }
     
     public Parser(File input){
-        this(input, SorterFactory.createSorter("onlyall"));
+        this(input, SorterFactory.createSorter(SorterFactory.ONLYALL));
     }
     
     public Parser (File input, Sorter sorter){
