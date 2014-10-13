@@ -25,7 +25,7 @@ public class SorterFactory {
 
     public final static String LEADER_SORTER = "leaders";
     public final static String LEADER_AND_BESTUUR_SORTER = "leadersandbestuur";
-    public final static String BESTUUR_SORTER = "leadersandbestuur";
+    public final static String BESTUUR_SORTER = "bestuur";
     public final static String UNIT_SORTER = "unit";
     public final static String ONLYALL = "onlyall";
 
