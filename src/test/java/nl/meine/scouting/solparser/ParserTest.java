@@ -86,6 +86,7 @@ public class ParserTest{
         assertEquals("1", p.getLid_huisnummer());
         assertEquals("J", p.getLid_initialen());
         assertEquals("Nederland", p.getLid_land());
+        assertEquals("bestuur", p.getSpeleenheid_soort());
         assertEquals("jvsmit@gmail.com", p.getLid_mailadres());
         assertEquals("ovsmit@gmail.com", p.getLid_mailadres_ouder_verzorger());
         assertEquals("o2vsmit@gmail.com", p.getLid_mailadres_ouder_verzorger_2());
@@ -132,7 +133,7 @@ public class ParserTest{
         assertEquals(2, parser.getAllPersons().size());
     }
     
-    public File getResource(String name) throws URISyntaxException {
+    public static File getResource(String name) throws URISyntaxException {
         File file = null;
 
         URL url = ParserTest.class.getResource(name);

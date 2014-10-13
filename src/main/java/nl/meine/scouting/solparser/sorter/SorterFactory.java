@@ -23,20 +23,25 @@ package nl.meine.scouting.solparser.sorter;
  */
 public class SorterFactory {
 
+    public final static String LEADER_SORTER = "leaders";
+    public final static String LEADER_AND_BESTUUR_SORTER = "leadersandbestuur";
+    public final static String BESTUUR_SORTER = "leadersandbestuur";
+    public final static String UNIT_SORTER = "unit";
+    public final static String ONLYALL = "onlyall";
 
     public static Sorter createSorter(String value) {
         Sorter sorter = null;
         if (value == null) {
             sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase("leaders")) {
+        } else if (value.equalsIgnoreCase(LEADER_SORTER)) {
             sorter = new LeadersSorter();
-        } else if (value.equalsIgnoreCase("leadersandbestuur")) {
+        } else if (value.equalsIgnoreCase(LEADER_AND_BESTUUR_SORTER)) {
             sorter = new LeadersAndBestuurSorter();
-        } else if (value.equalsIgnoreCase("unit")) {
+        } else if (value.equalsIgnoreCase(UNIT_SORTER)) {
             sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase("bestuur")) {
+        } else if (value.equalsIgnoreCase(BESTUUR_SORTER)) {
             sorter = new BestuurSorter();
-        } else if (value.equalsIgnoreCase("onlyall")) {
+        } else if (value.equalsIgnoreCase(ONLYALL)) {
             sorter = new OnlyAllSorter();
         } else {
             throw new IllegalArgumentException("Invalid sorter argument given: " + value);

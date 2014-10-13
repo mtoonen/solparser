@@ -54,8 +54,12 @@ public class Parser {
     }
     
     public Parser(File input){
+        this(input, SorterFactory.createSorter("onlyall"));
+    }
+    
+    public Parser (File input, Sorter sorter){
         this.input = input;
-        this.sorter = SorterFactory.createSorter("onlyall");
+        this.sorter = sorter;
     }
     
     public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
