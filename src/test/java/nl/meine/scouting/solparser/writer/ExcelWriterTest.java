@@ -14,6 +14,9 @@ import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.ParserTest;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,6 +68,9 @@ public class ExcelWriterTest extends ExcelWriter{
         if(instance.output.exists()){
             instance.output.delete();
         }
+        if(instance.previous.exists()){
+            instance.previous.delete();
+        }
     }
 
     /**
@@ -95,11 +101,18 @@ public class ExcelWriterTest extends ExcelWriter{
         Date end = new Date();
         Long duration = end.getTime() - begin.getTime();
         assertTrue(instance.previous.lastModified() - instance.output.lastModified() < duration);
-        assertTrue(instance.previous.exists());
         assertTrue(instance.output.exists());
         
         assertEquals(1,instance.workbook.getNumberOfSheets());
-
+        Sheet s = instance.workbook.getSheetAt(0);
+        assertEquals(3, s.getPhysicalNumberOfRows());
+        Row r1 = s.getRow(1);
+        Cell c1 = r1.getCell(0);
+        assertEquals ( true,c1.getStringCellValue().equalsIgnoreCase("16") || c1.getStringCellValue().equalsIgnoreCase("1616"));
+        Row r2 = s.getRow(2);
+        Cell c2 = r2.getCell(0);
+        assertEquals ( true,c2.getStringCellValue().equalsIgnoreCase("16") || c2.getStringCellValue().equalsIgnoreCase("1616"));
+        int a = 0;
     }
 
     /**
