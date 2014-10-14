@@ -48,6 +48,7 @@ public class ExcelWriterTest extends ExcelWriter{
         ExcelWriter instance = new ExcelWriter("dummy.xls");
         instance.init();
         assertNotNull( instance.out);
+        assertNotNull( instance.output);
         assertNotNull(instance.previous);
         assertNotNull(instance.workbook);
         assertNotNull(instance.headingStyle);
@@ -63,9 +64,11 @@ public class ExcelWriterTest extends ExcelWriter{
         System.out.println("write");
         ExcelWriter instance = new ExcelWriter("dummy.xls");
         instance.init();
+        assertNotNull (instance.allPersons);
+        assertNotNull (instance.sortedPersons);
         instance.write();
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
     }
 
     /**

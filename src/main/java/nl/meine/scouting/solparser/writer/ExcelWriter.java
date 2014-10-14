@@ -243,14 +243,16 @@ public class ExcelWriter extends SolWriter{
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
                 Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
-                for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
-                    Row row = it.next();
-                    if( row.getRowNum() > 0){
-                        String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
-                        Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
-                        processPersonUpdates(row, previousRow);
-                    }
+                if(prevSheet != null){
+                    for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
+                        Row row = it.next();
+                        if( row.getRowNum() > 0){
+                            String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+                            Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
+                            processPersonUpdates(row, previousRow);
+                        }
 
+                    }
                 }
             } catch (FileNotFoundException ex) {
                 System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
