@@ -72,7 +72,6 @@ public class ExcelWriterTest extends ExcelWriter{
      */
     @Test
     public void testInit() {
-        System.out.println("init");
         assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
         assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
         assertNotNull( instance.out);
@@ -89,10 +88,6 @@ public class ExcelWriterTest extends ExcelWriter{
      */
     @Test
     public void testWrite() {
-        System.out.println("write");
-      //  ExcelWriter instance = new ExcelWriter("dummy.xls");
-
-
         assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
         assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
         Date begin = new Date();
@@ -104,7 +99,6 @@ public class ExcelWriterTest extends ExcelWriter{
         assertTrue(instance.output.exists());
         
         assertEquals(1,instance.workbook.getNumberOfSheets());
-        // TODO review the generated test code and remove the default call to fail.
 
     }
 
@@ -115,7 +109,6 @@ public class ExcelWriterTest extends ExcelWriter{
     public void testFinalize() throws Exception, Throwable {
         System.out.println("finalize");
         instance.finalize();
-        // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
