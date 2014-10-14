@@ -41,7 +41,7 @@ public class LeadersAndBestuurSorterTest {
     @Test
     public void testSort() throws URISyntaxException {
         File twopersons = ParserTest.getResource("twopersons.csv");
-        Parser parser = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.LEADER_AND_BESTUUR_SORTER));
+        Parser parser = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_LEADERS_AND_BESTUUR));
         parser.read(true);
         assertEquals(2, parser.getAllPersons().size());
 

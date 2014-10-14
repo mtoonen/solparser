@@ -31,8 +31,8 @@ public class OnlyAllSorter implements Sorter{
 
     public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> all = new HashMap();
-        all.put(Parser.GROUP_NAME_ALL, allPersons);
+        all.put(SorterFactory.GROUP_NAME_ALL, allPersons);
         return all;
     }
-    
+
 }
