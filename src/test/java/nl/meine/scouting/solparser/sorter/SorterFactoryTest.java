@@ -61,6 +61,10 @@ public class SorterFactoryTest {
 
         result = SorterFactory.createSorter(SorterFactory.SORTER_UNIT);
         assertTrue(result instanceof UnitSorter);
+
+
+        result = SorterFactory.createSorter(null);
+        assertTrue(result instanceof UnitSorter);
         try{
             result = SorterFactory.createSorter("aapnootmies");
             fail();

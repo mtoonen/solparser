@@ -41,22 +41,30 @@ public class Main {
 
         Properties prop = argsParser(args);
         if (prop.containsKey("action")) {
-            
+
             System.out.println(HELP_TEXT);
         } else {
             //-s onlyall -ot excel -sf true -i selectie_2871.csv -o aap.xls
+            String output = prop.getProperty("output");
             Sorter sorter = SorterFactory.createSorter(prop.getProperty("sorter"));
-            SolWriter writer = getWriter(prop.getProperty("outputtype"));
+            SolWriter writer = getWriter(prop.getProperty("outputtype"),output);
             boolean skipfirst = prop.getProperty("skipfirst") == null ? true : Boolean.parseBoolean(prop.getProperty("skipfirst"));
             String input = prop.getProperty("input");
-            String output = prop.getProperty("output");
             if (input == null || output == null || input.isEmpty() || output.isEmpty()){
                 throw new IllegalArgumentException("Input and/or output are not properly defined.");
             }
-            Parser p = new Parser(input, output, writer, sorter);
-            p.init();
+            Parser p = new Parser(input, sorter);
+            writer.init();
             p.read(skipfirst);
-            p.write();
+            if (writer != null && p.getAllPersons().size() > 0 && p.getSortedPersons().size() > 0) {
+                writer.setAllPersons(p.getAllPersons());
+                writer.setSortedPersons(p.getSortedPersons());
+                writer.write();
+                writer.finalize();
+            } else {
+                System.err.println("Not entirely initialized. Did you read before writing?");
+            }
+
         }
 
     }
@@ -86,12 +94,12 @@ public class Main {
         return prop;
     }
 
-    public static SolWriter getWriter(String value) {
+    public static SolWriter getWriter(String value, String output) {
         SolWriter writer = null;
         if (value == null) {
-            writer = new ExcelWriter();
+            writer = new ExcelWriter(output);
         } else if (value.equalsIgnoreCase("excel")) {
-            writer = new ExcelWriter();
+            writer = new ExcelWriter(output);
         } else {
             throw new IllegalArgumentException("Invalid output argument given: " + value);
         }
