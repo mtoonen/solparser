@@ -37,11 +37,11 @@ public class BestuurSorterTest {
     Parser parser;
     public BestuurSorterTest() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -55,11 +55,11 @@ public class BestuurSorterTest {
         parser = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_BESTUUR));
         parser.read(true);
         assertEquals(2, parser.getAllPersons().size());
-        
+
         Map<String,List<Person>> sorted = parser.getSortedPersons();
         assertEquals(2, sorted.keySet().size());
-        assertTrue(sorted.containsKey("Besturen"));
-        assertEquals(1, sorted.get("Besturen").size());
+        assertTrue(sorted.containsKey(SorterFactory.GROUP_BESTUUR));
+        assertEquals(1, sorted.get(SorterFactory.GROUP_BESTUUR).size());
     }
-    
+
 }

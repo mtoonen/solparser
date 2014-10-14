@@ -41,7 +41,7 @@ public class BestuurSorter extends OnlyAllSorter {
                 bestuur.add(p);
             }
         }
-        sorted.put("Besturen",bestuur);
+        sorted.put(SorterFactory.GROUP_BESTUUR,bestuur);
         return sorted;
     }
 }
