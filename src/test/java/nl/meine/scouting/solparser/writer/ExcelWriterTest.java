@@ -7,6 +7,7 @@ package nl.meine.scouting.solparser.writer;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import nl.meine.scouting.solparser.Parser;
@@ -28,6 +29,8 @@ public class ExcelWriterTest extends ExcelWriter{
 
     private static Map<String, List<Person>> sortedPersons;
     private static List<Person> persons;
+    
+    private ExcelWriter instance = new ExcelWriter("dummy.xls");
 
     public ExcelWriterTest() {
         super("dummy.xls");
@@ -47,14 +50,21 @@ public class ExcelWriterTest extends ExcelWriter{
 
     @AfterClass
     public static void tearDownClass() {
+        
     }
 
     @Before
     public void setUp() {
+        instance.setAllPersons(persons);
+        instance.setSortedPersons(sortedPersons);
+        instance.init();
     }
 
     @After
     public void tearDown() {
+        if(instance.output.exists()){
+            instance.output.delete();
+        }
     }
 
     /**
@@ -63,13 +73,8 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testInit() {
         System.out.println("init");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
-
-        instance.setAllPersons(persons);
-        instance.setSortedPersons(sortedPersons);
         assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
         assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
-        instance.init();
         assertNotNull( instance.out);
         assertNotNull( instance.output);
         assertNotNull(instance.previous);
@@ -85,15 +90,19 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testWrite() {
         System.out.println("write");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
+      //  ExcelWriter instance = new ExcelWriter("dummy.xls");
 
-        instance.setAllPersons(persons);
-        instance.setSortedPersons(sortedPersons);
 
         assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
         assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
-        instance.init();
+        Date begin = new Date();
         instance.write();
+        Date end = new Date();
+        Long duration = end.getTime() - begin.getTime();
+        assertTrue(instance.previous.lastModified() - instance.output.lastModified() < duration);
+        assertTrue(instance.previous.exists());
+        assertTrue(instance.output.exists());
+        
         assertEquals(1,instance.workbook.getNumberOfSheets());
         // TODO review the generated test code and remove the default call to fail.
 
@@ -105,8 +114,6 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testFinalize() throws Exception, Throwable {
         System.out.println("finalize");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
-        instance.init();
         instance.finalize();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

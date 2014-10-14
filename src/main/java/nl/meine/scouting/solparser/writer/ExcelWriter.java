@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
