@@ -103,6 +103,7 @@ public class ExcelWriter extends SolWriter{
         processUpdates(sheet);
         if(sheet.getSheetName().equals(SorterFactory.GROUP_NAME_ALL)){
             workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
+            processQuitters(sheet);
         }
     }
 
@@ -256,18 +257,6 @@ public class ExcelWriter extends SolWriter{
                         }
                      
                     }
-                    List<Row> quitters = new ArrayList<Row>();
-                    // Check of er mensen vertrokken zijn
-                    for (Row row : prevSheet) {
-                        if( row.getRowNum() > 0){
-                            String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
-                            Row currentRow = getLidFromSheet(lidnummer, sheet);
-                            if(currentRow == null){
-                                quitters.add(row);
-                            }
-                        }
-                    }
-                    processQuitters(quitters);
                 }
             } catch (FileNotFoundException ex) {
                 System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
@@ -295,7 +284,7 @@ public class ExcelWriter extends SolWriter{
         }
         return null;
     }
-   
+    
     private void processPersonUpdates( Row newRow, Row oldRow){
         String newSpeltak = newRow.getCell(NUM_SPELTAK_CELL).getStringCellValue();
         boolean isNew = oldRow == null;
@@ -327,54 +316,77 @@ public class ExcelWriter extends SolWriter{
         }
     }
     
-    private void processQuitters(List<Row> quitters){
-        Sheet sheet = workbook.createSheet(SHEET_REMOVED_PERSONS);
-        
-        // Create header
-        Row header = sheet.createRow(0);
-        //Lidnummer	Achternaam	Tussenvoegsel	Voornaam	Geslacht    Telefoonnummer	Mobiel  Geboortedatum
+    private void processQuitters(Sheet sheet) {
+        if(hasPrevious()){
+            List<Row> quitters = new ArrayList<Row>();
+            try{
+                FileInputStream previousStream = new FileInputStream(previous);
+                //Get the workbook instance for XLS file
+                HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
+                Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
+                // Check of er mensen vertrokken zijn
+                for (Row row : prevSheet) {
+                    if (row.getRowNum() > 0) {
+                        String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+                        Row currentRow = getLidFromSheet(lidnummer, sheet);
+                        if (currentRow == null) {
+                            quitters.add(row);
+                        }
+                    }
+                }
+            }catch(IOException ex ){
+                return;
+            }
+            if(quitters.isEmpty()){
+                return;
+            }
+            Sheet removedSheet = workbook.createSheet(SHEET_REMOVED_PERSONS);
 
+            // Create header
+            Row header = removedSheet.createRow(0);
+            //Lidnummer	Achternaam	Tussenvoegsel	Voornaam	Geslacht    Telefoonnummer	Mobiel  Geboortedatum
 
+            Cell lidnummer = header.createCell(0);
+            lidnummer.setCellValue("Lidnummer");
+            lidnummer.setCellStyle(headingStyle);
+            Cell achternaam = header.createCell(1);
+            achternaam.setCellValue("Achternaam");
+            achternaam.setCellStyle(headingStyle);
+            Cell tussenvoegsel = header.createCell(2);
+            tussenvoegsel.setCellValue("Tussenvoegsel");
+            tussenvoegsel.setCellStyle(headingStyle);
+            Cell voornaam = header.createCell(3);
+            voornaam.setCellValue("Voornaam");
+            voornaam.setCellStyle(headingStyle);
+            Cell geslacht = header.createCell(4);
+            geslacht.setCellValue("Geslacht");
+            geslacht.setCellStyle(headingStyle);
+            Cell telefoonnummer = header.createCell(5);
+            telefoonnummer.setCellValue("Telefoonnummer");
+            telefoonnummer.setCellStyle(headingStyle);
+            Cell geboortedatum = header.createCell(6);
+            geboortedatum.setCellValue("Geboortedatum");
+            geboortedatum.setCellStyle(headingStyle);
 
-        Cell lidnummer = header.createCell(0);
-        lidnummer.setCellValue("Lidnummer");
-        lidnummer.setCellStyle(headingStyle);
-        Cell achternaam = header.createCell(1);
-        achternaam.setCellValue("Achternaam");
-        achternaam.setCellStyle(headingStyle);
-        Cell tussenvoegsel = header.createCell(2);
-        tussenvoegsel.setCellValue("Tussenvoegsel");
-        tussenvoegsel.setCellStyle(headingStyle);
-        Cell voornaam = header.createCell(3);
-        voornaam.setCellValue("Voornaam");
-        voornaam.setCellStyle(headingStyle);
-        Cell geslacht = header.createCell(4);
-        geslacht.setCellValue("Geslacht");
-        geslacht.setCellStyle(headingStyle);
-        Cell telefoonnummer = header.createCell(5);
-        telefoonnummer.setCellValue("Telefoonnummer");
-        telefoonnummer.setCellStyle(headingStyle);
-        Cell geboortedatum = header.createCell(6);
-        geboortedatum.setCellValue("Geboortedatum");
-        geboortedatum.setCellStyle(headingStyle);
-        
-        // Iterate over quitters
-        int index = 1;
-        for (Row quitter : quitters) {
-            Row r = sheet.createRow(index);
-            r.createCell(0).setCellValue(quitter.getCell(0).getStringCellValue());
-            r.createCell(1).setCellValue(quitter.getCell(1).getStringCellValue());
-            r.createCell(2).setCellValue(quitter.getCell(2).getStringCellValue());
-            r.createCell(3).setCellValue(quitter.getCell(3).getStringCellValue());
-            r.createCell(4).setCellValue(quitter.getCell(5).getStringCellValue());
-            r.createCell(5).setCellValue(quitter.getCell(10).getStringCellValue());
-            r.createCell(6).setCellValue(quitter.getCell(21).getStringCellValue());
-        }
-        
-         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 6));
-        int numcells = sheet.getRow(0).getLastCellNum();
-        for (int i = 0; i < numcells; i++) {
-            sheet.autoSizeColumn(i);
+            // Iterate over quitters
+            int index = 1;
+            for (Row quitter : quitters) {
+                Row r = removedSheet.createRow(index);
+                r.createCell(0).setCellValue(quitter.getCell(0).getStringCellValue());
+                r.createCell(1).setCellValue(quitter.getCell(1).getStringCellValue());
+                r.createCell(2).setCellValue(quitter.getCell(2).getStringCellValue());
+                r.createCell(3).setCellValue(quitter.getCell(3).getStringCellValue());
+                r.createCell(4).setCellValue(quitter.getCell(5).getStringCellValue());
+                r.createCell(5).setCellValue(quitter.getCell(10).getStringCellValue());
+                r.createCell(6).setCellValue(quitter.getCell(21).getStringCellValue());
+                index++;
+            }
+
+            removedSheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 6));
+            int numcells = removedSheet.getRow(0).getLastCellNum();
+            for (int i = 0; i < numcells; i++) {
+                removedSheet.autoSizeColumn(i);
+            }
         }
     }
 
