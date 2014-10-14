@@ -16,10 +16,12 @@ import static org.junit.Assert.*;
  *
  * @author meine
  */
-public class ExcelWriterTest {
+public class ExcelWriterTest extends ExcelWriter{
 
     public ExcelWriterTest() {
+        super("dummy.xls");
     }
+
 
     @BeforeClass
     public static void setUpClass() {
@@ -45,8 +47,12 @@ public class ExcelWriterTest {
         System.out.println("init");
         ExcelWriter instance = new ExcelWriter("dummy.xls");
         instance.init();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull( instance.out);
+        assertNotNull(instance.previous);
+        assertNotNull(instance.workbook);
+        assertNotNull(instance.headingStyle);
+        assertNotNull(instance.normalStyle);
+
     }
 
     /**
