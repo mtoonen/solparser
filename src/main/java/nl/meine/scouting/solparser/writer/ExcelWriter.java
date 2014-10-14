@@ -58,6 +58,8 @@ public class ExcelWriter extends SolWriter{
 
     private final static int NUM_LIDNUMMER_CELL = 0;
     private final static int NUM_SPELTAK_CELL = 19;
+    
+    public static final String SHEET_REMOVED_PERSONS = "Vertrokken mensen";
 
     public ExcelWriter( String output ){
         super(output);

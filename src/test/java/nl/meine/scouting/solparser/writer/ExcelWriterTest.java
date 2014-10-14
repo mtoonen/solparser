@@ -47,12 +47,6 @@ public class ExcelWriterTest extends ExcelWriter{
     @BeforeClass
     public static void setUpClass() throws URISyntaxException {
 
-        File twopersons = ParserTest.getResource("twopersons.csv");
-        Parser p = new Parser(twopersons , SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
-
-        p.read(true);
-        persons = p.getAllPersons();
-        sortedPersons = p.getSortedPersons();
     }
 
     @AfterClass
@@ -61,7 +55,15 @@ public class ExcelWriterTest extends ExcelWriter{
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws URISyntaxException {
+        
+        File twopersons = ParserTest.getResource("twopersons.csv");
+        Parser p = new Parser(twopersons , SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
+
+        p.read(true);
+        persons = p.getAllPersons();
+        sortedPersons = p.getSortedPersons();
+        
         instance.setAllPersons(persons);
         instance.setSortedPersons(sortedPersons);
         instance.init();
@@ -177,6 +179,41 @@ public class ExcelWriterTest extends ExcelWriter{
                 }
             }
         }
+    }
+    
+    @Test
+    public void testRemovedPerson() throws Throwable{
+        instance.write();
+        instance.finalize();
+        
+        // lidnummer 16: weg
+        // lidnummer 1616 alles gelijk
+        File twopersons = ParserTest.getResource("twopersons_removed.csv");
+        Parser p = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
+
+        p.read(true);
+        persons = p.getAllPersons();
+        sortedPersons = p.getSortedPersons();
+        
+        
+        instance = new ExcelWriter("dummy.xls");
+        instance.setAllPersons(allPersons);
+        instance.setSortedPersons(sortedPersons);
+        instance.init();
+        instance.write();
+        instance.finalize();
+        
+        Workbook wb = instance.workbook;
+        Sheet s = wb.getSheetAt(0);
+        assertEquals(2, s.getPhysicalNumberOfRows());
+        
+        Sheet removedSheet = wb.getSheet(ExcelWriter.SHEET_REMOVED_PERSONS);
+        assertNotNull(removedSheet);
+        assertEquals(2,removedSheet.getPhysicalNumberOfRows());
+        Row r = removedSheet.getRow(1);
+        Cell lidnummer = r.getCell(0);
+        assertEquals("16", lidnummer.getStringCellValue());
+        
     }
 
 }
