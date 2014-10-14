@@ -181,7 +181,7 @@ public class ExcelWriter extends SolWriter{
             c.setCellStyle(headingStyle);
         }
 
-        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 17));
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 23));
     }
 
     private void createStyles() {
