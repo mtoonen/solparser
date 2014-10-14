@@ -50,9 +50,9 @@ public class ExcelWriter extends SolWriter{
     protected FileOutputStream out = null;
     protected Workbook workbook;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 24;
-    private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
-    private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
-    private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
+    public static final short COLOR_UPDATED = IndexedColors.YELLOW.index;
+    public static final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
+    public static final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
 
     protected File previous;
 

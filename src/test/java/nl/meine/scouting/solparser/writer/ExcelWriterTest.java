@@ -17,8 +17,10 @@ import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -127,6 +129,54 @@ public class ExcelWriterTest extends ExcelWriter{
         assertArrayEquals(IOUtils.toByteArray(new FileInputStream(instance.output)), IOUtils.toByteArray(new FileInputStream(instance.previous)));
         assertTrue(instance.output.exists());
         assertTrue(instance.previous.exists());
+    }
+    
+    @Test
+    public void testUpdates() throws Throwable{
+        instance.write();
+        instance.finalize();
+        
+        File twopersons = ParserTest.getResource("twopersons_update.csv");
+        Parser p = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
+
+        p.read(true);
+        persons = p.getAllPersons();
+        sortedPersons = p.getSortedPersons();
+        
+        
+        instance = new ExcelWriter("dummy.xls");
+        instance.setAllPersons(allPersons);
+        instance.setSortedPersons(sortedPersons);
+        instance.init();
+        instance.write();
+        instance.finalize();
+        
+        Workbook wb = instance.workbook;
+        Sheet s = wb.getSheetAt(0);
+        assertEquals(4, s.getPhysicalNumberOfRows());
+        // lidnummer: 161616 is nieuw
+        // lidnummer 16: straat geupdatet
+        // lidnummer 1616 alles gelijk
+        for(int i = 1 ; i < s.getPhysicalNumberOfRows() ;i++){
+            Row r = s.getRow(i);
+            Cell lidnummer = r.getCell(0);
+            if(lidnummer.getStringCellValue().equals("16")){
+                Cell straat = r.getCell(6);
+                Cell huisnummer = r.getCell(7);
+                assertEquals ( ExcelWriter.COLOR_UPDATED, straat.getCellStyle().getFillForegroundColor());
+                assertEquals ( ExcelWriter.COLOR_UPDATED, huisnummer.getCellStyle().getFillForegroundColor());
+            }else  if(lidnummer.getStringCellValue().equals("1616")){
+                for(int j = 0 ; j < r.getPhysicalNumberOfCells() ;j++){
+                    Cell c = r.getCell(j);
+                    assertEquals(IndexedColors.AUTOMATIC.index, c.getCellStyle().getFillForegroundColor());
+                }
+            }else  if(lidnummer.getStringCellValue().equals("161616")){
+                for(int j = 0 ; j < r.getPhysicalNumberOfCells() ;j++){
+                    Cell c = r.getCell(j);
+                    assertEquals(ExcelWriter.COLOR_NEW, c.getCellStyle().getFillForegroundColor());
+                }
+            }
+        }
     }
 
 }
