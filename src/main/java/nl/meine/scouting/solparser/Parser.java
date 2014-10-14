@@ -140,13 +140,6 @@ public class Parser {
         allPersons = newList;
     }
 
-    private String concatIfNotExisting(String value1, String value2){
-        if(value1.indexOf(value2) > 0 ){
-            value1 += " / " + value2;
-        }
-        return value1;
-    }
-
     public Person createPerson(String[] row) {
         Person p = new Person();
 
