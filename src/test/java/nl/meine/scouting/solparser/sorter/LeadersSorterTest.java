@@ -56,6 +56,7 @@ public class LeadersSorterTest {
 
         Map<String,List<Person>> sorted = parser.getSortedPersons();
         assertEquals(2, sorted.keySet().size());
+        assertTrue(sorted.containsKey(SorterFactory.GROUP_NAME_ALL));
         assertTrue(!sorted.containsKey(SorterFactory.GROUP_BESTUUR));
         assertTrue(sorted.containsKey(SorterFactory.GROUP_LEADERS));
         assertEquals(1, sorted.get(SorterFactory.GROUP_LEADERS).size());
