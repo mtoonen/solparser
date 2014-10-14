@@ -45,7 +45,7 @@ public class LeadersSorter extends OnlyAllSorter {
                 }
             }
         }
-        sorted.put("Speltakleiding", leaders);
+        sorted.put(SorterFactory.GROUP_LEADERS, leaders);
         return sorted;
     }
 }

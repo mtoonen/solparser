@@ -32,6 +32,9 @@ public class SorterFactory {
 
 
     public static final String GROUP_NAME_ALL = "Ledenlijst (alle leden)";
+    public static final String GROUP_LEADERS = "Speltakleiding";
+    public static final String GROUP_BESTUUR = "Bestuur";
+
 
     public static Sorter createSorter(String value) {
         Sorter sorter = null;
