@@ -29,7 +29,6 @@ import java.util.Map;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
-import nl.meine.scouting.solparser.writer.SolWriter;
 
 /**
  *
@@ -42,7 +41,6 @@ public class Parser {
     private Map<String, List<Person>> sortedPersons = new HashMap();
     private List<Person> allPersons = new ArrayList();
 
-    private SolWriter writer;
     private Sorter sorter;
 
     private int type = 1216;
@@ -60,16 +58,10 @@ public class Parser {
         this.sorter = sorter;
     }
 
-    public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
+    public Parser(String inputFile, String outputFile, Sorter sorter) {
         input = new File(inputFile);
         output = new File(outputFile);
-        this.writer = writer;
-        this.writer.setOutput(output);
         this.sorter = sorter;
-    }
-
-    public void init() {
-        writer.init();
     }
 
     public void read(boolean skipfirst) {
@@ -97,17 +89,6 @@ public class Parser {
         }
         postProcessPersons();
 
-    }
-
-    public void write() throws Throwable {
-        if(writer != null && allPersons.size() > 0  && sortedPersons.size() > 0){
-            writer.setAllPersons(allPersons);
-            writer.setSortedPersons(sortedPersons);
-            writer.write();
-            writer.finalize();
-        }else{
-            System.err.println("Not entirely initialized. Did you read before writing?");
-        }
     }
 
     private void postProcessPersons() {

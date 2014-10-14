@@ -60,7 +60,8 @@ public class ExcelWriter extends SolWriter{
     private final static int NUM_LIDNUMMER_CELL = 0;
     private final static int NUM_SPELTAK_CELL = 19;
 
-    public ExcelWriter( ){
+    public ExcelWriter( String output ){
+        super(output);
     }
 
     @Override

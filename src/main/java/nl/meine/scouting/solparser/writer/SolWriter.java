@@ -32,13 +32,14 @@ public abstract class SolWriter {
     protected List<Person> allPersons = new ArrayList();
     protected Map<String, List<Person>> sortedPersons = new HashMap();
     protected File output;
-    
-    public SolWriter(){
+
+    public SolWriter(String output){
+        this.output = new File(output);
     }
-    
+
     public abstract void init();
     public abstract void write();
-    
+
     @Override
     public void finalize() throws Throwable{
         super.finalize();
@@ -59,13 +60,4 @@ public abstract class SolWriter {
     public void setSortedPersons(Map<String, List<Person>> sortedPersons) {
         this.sortedPersons = sortedPersons;
     }
-
-    public File getOutput() {
-        return output;
-    }
-
-    public void setOutput(File output) {
-        this.output = output;
-    }
-    
 }
