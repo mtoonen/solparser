@@ -13,7 +13,9 @@ import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.ParserTest;
 import nl.meine.scouting.solparser.entities.Person;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,10 +23,17 @@ import static org.junit.Assert.*;
  *
  * @author meine
  */
-public class LeadersAndBestuurSorterTest {
+public class UnitSorterTest {
 
+    public UnitSorterTest() {
+    }
 
-    public LeadersAndBestuurSorterTest() {
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
     }
 
     @Before
@@ -36,21 +45,23 @@ public class LeadersAndBestuurSorterTest {
     }
 
     /**
-     * Test of sort method, of class LeadersAndBestuurSorter.
+     * Test of sort method, of class UnitSorter.
      */
     @Test
     public void testSort() throws URISyntaxException {
+
         File twopersons = ParserTest.getResource("twopersons.csv");
-        Parser parser = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_LEADERS_AND_BESTUUR));
+        Parser parser = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_UNIT));
         parser.read(true);
         assertEquals(2, parser.getAllPersons().size());
 
         Map<String,List<Person>> sorted = parser.getSortedPersons();
-        assertEquals(3, sorted.keySet().size());
-        assertTrue(sorted.containsKey("Besturen"));
-        assertTrue(sorted.containsKey("Speltakleiding"));
-        assertEquals(1, sorted.get("Besturen").size());
-        assertEquals(1, sorted.get("Speltakleiding").size());
+        assertEquals(2, sorted.keySet().size());
+        assertTrue(!sorted.containsKey(SorterFactory.GROUP_BESTUUR));
+        assertTrue(!sorted.containsKey(SorterFactory.GROUP_LEADERS));
+        assertTrue(sorted.containsKey(SorterFactory.GROUP_NAME_ALL));
+        assertEquals(2, sorted.size());
+        assertEquals(2, sorted.get(SorterFactory.GROUP_NAME_ALL).size());
     }
 
 }

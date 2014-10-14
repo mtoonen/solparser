@@ -23,25 +23,32 @@ package nl.meine.scouting.solparser.sorter;
  */
 public class SorterFactory {
 
-    public final static String LEADER_SORTER = "leaders";
-    public final static String LEADER_AND_BESTUUR_SORTER = "leadersandbestuur";
-    public final static String BESTUUR_SORTER = "bestuur";
-    public final static String UNIT_SORTER = "unit";
-    public final static String ONLYALL = "onlyall";
+    public final static String SORTER_LEADERS = "leaders";
+    public final static String SORTER_LEADERS_AND_BESTUUR = "leadersandbestuur";
+    public final static String SORTER_BESTUUR = "bestuur";
+    public final static String SORTER_UNIT = "unit";
+    public final static String SORTER_ONLYALL = "onlyall";
+
+
+
+    public static final String GROUP_NAME_ALL = "Ledenlijst (alle leden)";
+    public static final String GROUP_LEADERS = "Speltakleiding";
+    public static final String GROUP_BESTUUR = "Bestuur";
+
 
     public static Sorter createSorter(String value) {
         Sorter sorter = null;
         if (value == null) {
             sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase(LEADER_SORTER)) {
+        } else if (value.equalsIgnoreCase(SORTER_LEADERS)) {
             sorter = new LeadersSorter();
-        } else if (value.equalsIgnoreCase(LEADER_AND_BESTUUR_SORTER)) {
+        } else if (value.equalsIgnoreCase(SORTER_LEADERS_AND_BESTUUR)) {
             sorter = new LeadersAndBestuurSorter();
-        } else if (value.equalsIgnoreCase(UNIT_SORTER)) {
+        } else if (value.equalsIgnoreCase(SORTER_UNIT)) {
             sorter = new UnitSorter();
-        } else if (value.equalsIgnoreCase(BESTUUR_SORTER)) {
+        } else if (value.equalsIgnoreCase(SORTER_BESTUUR)) {
             sorter = new BestuurSorter();
-        } else if (value.equalsIgnoreCase(ONLYALL)) {
+        } else if (value.equalsIgnoreCase(SORTER_ONLYALL)) {
             sorter = new OnlyAllSorter();
         } else {
             throw new IllegalArgumentException("Invalid sorter argument given: " + value);

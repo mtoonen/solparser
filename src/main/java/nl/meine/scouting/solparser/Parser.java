@@ -37,31 +37,29 @@ import nl.meine.scouting.solparser.writer.SolWriter;
  */
 public class Parser {
 
-    public static final String GROUP_NAME_ALL = "Ledenlijst (alle leden)";
-    
     private File input;
     private File output;
     private Map<String, List<Person>> sortedPersons = new HashMap();
     private List<Person> allPersons = new ArrayList();
-    
+
     private SolWriter writer;
     private Sorter sorter;
-    
+
     private int type = 1216;
-    
+
     public Parser(){
-        
+
     }
-    
+
     public Parser(File input){
-        this(input, SorterFactory.createSorter(SorterFactory.ONLYALL));
+        this(input, SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
     }
-    
+
     public Parser (File input, Sorter sorter){
         this.input = input;
         this.sorter = sorter;
     }
-    
+
     public Parser(String inputFile, String outputFile, SolWriter writer, Sorter sorter) {
         input = new File(inputFile);
         output = new File(outputFile);
@@ -141,14 +139,14 @@ public class Parser {
         }
         allPersons = newList;
     }
-    
+
     private String concatIfNotExisting(String value1, String value2){
         if(value1.indexOf(value2) > 0 ){
             value1 += " / " + value2;
         }
         return value1;
     }
-    
+
     public Person createPerson(String[] row) {
         Person p = new Person();
         if (type == 2871) {
@@ -211,7 +209,7 @@ public class Parser {
             p.setLid_naam_ouder_verzorger(row[17]);
             p.setLid_mailadres_ouder_verzorger(row[18]);
             p.setLid_telefoonnummer_ouder_verzorger(row[19]);
-            
+
             p.setLid_naam_ouder_verzorger_2(row[20]);
             //"Lid mailadres ouder/verzorger 2";"Lid telefoonnummer ouder/verzorger 2";"Overige informatie";"Functie";"Functie status";"Functie startdatum";
             p.setLid_mailadres_ouder_verzorger_2(row[21]);
@@ -222,9 +220,9 @@ public class Parser {
             p.setFunctie_startdatum(row[26]);
             p.setOrganisatie(row[31]);
             p.setOrganisatie_plaats(row[32]);
-            
+
             //"Speleenheid soort";"Speleenheid";"Organisatienummer";"Organisatie categorie";"Organisatie";"Organisatie plaats"
-           
+
             p.setSpeleenheid_soort(row[27]);
             String speleenheid = row[28];
             speleenheid = speleenheid.replaceAll("/", "-");
@@ -239,5 +237,5 @@ public class Parser {
 
     public List<Person> getAllPersons() {
         return allPersons;
-    }  
+    }
 }

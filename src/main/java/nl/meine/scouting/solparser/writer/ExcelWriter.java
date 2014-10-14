@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.entities.Person;
+import nl.meine.scouting.solparser.sorter.SorterFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -53,12 +54,12 @@ public class ExcelWriter extends SolWriter{
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
     private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
-    
+
     private File previous;
-    
+
     private final static int NUM_LIDNUMMER_CELL = 0;
     private final static int NUM_SPELTAK_CELL = 19;
-    
+
     public ExcelWriter( ){
     }
 
@@ -97,11 +98,11 @@ public class ExcelWriter extends SolWriter{
             sheet.autoSizeColumn(i);
         }
         processUpdates(sheet);
-        if(sheet.getSheetName().equals(Parser.GROUP_NAME_ALL)){
-            workbook.setSheetOrder(Parser.GROUP_NAME_ALL, 0);
+        if(sheet.getSheetName().equals(SorterFactory.GROUP_NAME_ALL)){
+            workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
         }
     }
-    
+
      private Row createRow(Person p, Sheet sheet, int index) {
         // Skip the heading
         index++;
@@ -111,9 +112,9 @@ public class ExcelWriter extends SolWriter{
             Cell c = r.createCell(i);
             cells[i] = c;
             c.setCellStyle(normalStyle);
-            
+
         }
-//        Lidnummer	Achternaam	tussenvoegsel	Roepnaam	Voorletters	geslacht	Adres	Huisnummer	Postcode	Woonplaats	
+//        Lidnummer	Achternaam	tussenvoegsel	Roepnaam	Voorletters	geslacht	Adres	Huisnummer	Postcode	Woonplaats
         cells[0].setCellValue(p.getLidnummer());
         cells[1].setCellValue(p.getLid_achternaam());
         cells[2].setCellValue(p.getLid_tussenvoegsel());
@@ -124,9 +125,9 @@ public class ExcelWriter extends SolWriter{
         cells[7].setCellValue(p.getLid_huisnummer() + " " + p.getLid_toevoegsel_huisnr());
         cells[8].setCellValue(p.getLid_postcode());
         cells[9].setCellValue(p.getLid_plaats());
-        //telefoon	mobiel lid	mobiel ouders 	
+        //telefoon	mobiel lid	mobiel ouders
         //mobiel vader	mobiel moeder	// niet aanwezig!
-        //e-mail lid	e-mail ouders	(Jeugd)lid bij Speltak	
+        //e-mail lid	e-mail ouders	(Jeugd)lid bij Speltak
         //Leiding bij Speltak	// Volgt uit tabbladen verdeling
         //Functie	Geboortedatum	Lid sinds
         cells[10].setCellValue(p.getLid_telefoon());
@@ -179,10 +180,10 @@ public class ExcelWriter extends SolWriter{
             Cell c = it.next();
             c.setCellStyle(headingStyle);
         }
-        
+
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 17));
     }
-    
+
     private void createStyles() {
 
         headingStyle = workbook.createCellStyle();
@@ -209,7 +210,7 @@ public class ExcelWriter extends SolWriter{
         normalStyle.setFont(f2);
 
     }
-    
+
     @Override
     public void finalize() throws Throwable {
         super.finalize();
@@ -228,11 +229,11 @@ public class ExcelWriter extends SolWriter{
         }
         replacePrevious(output);
     }
-    
+
     private boolean hasPrevious(){
         return previous.exists();
     }
-    
+
     private void processUpdates(Sheet sheet){
         if(hasPrevious()){
             FileInputStream previousStream = null;
@@ -240,7 +241,7 @@ public class ExcelWriter extends SolWriter{
                 previousStream = new FileInputStream(previous);
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
-                Sheet prevSheet = prevWorkbook.getSheet(Parser.GROUP_NAME_ALL);
+                Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
                 for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
                     Row row = it.next();
                     if( row.getRowNum() > 0){
@@ -250,7 +251,7 @@ public class ExcelWriter extends SolWriter{
                     }
 
                 }
-            } catch (FileNotFoundException ex) {            
+            } catch (FileNotFoundException ex) {
                 System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
             } catch (IOException ex) {
                 System.err.println("Problems reading file: "+ ex.getLocalizedMessage());
@@ -265,7 +266,7 @@ public class ExcelWriter extends SolWriter{
             }
         }
     }
-    
+
     private Row getPreviousLidRow(String lidnummer, Sheet sheet){
         for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
             Row row = it.next();
@@ -276,7 +277,7 @@ public class ExcelWriter extends SolWriter{
         }
         return null;
     }
-    
+
     private void processPersonUpdates( Row newRow, Row oldRow){
         String newSpeltak = newRow.getCell(NUM_SPELTAK_CELL).getStringCellValue();
         boolean isNew = oldRow == null;
@@ -287,7 +288,7 @@ public class ExcelWriter extends SolWriter{
                 isOvervlieger = true;
             }
         }
-        
+
         for (Iterator<Cell> it = newRow.cellIterator(); it.hasNext();) {
             Cell newCell = it.next();
             if(isNew){
@@ -303,12 +304,12 @@ public class ExcelWriter extends SolWriter{
                 if(!newValue.equals(oldValue) && colIndex != NUM_SPELTAK_CELL){
                     updateCellColor(newCell, COLOR_UPDATED);
                 }
-            
+
             }
         }
-       
+
     }
-    
+
     private void updateCellColor(Cell cell, short color){
         CellStyle style = workbook.createCellStyle();;
         style.cloneStyleFrom(cell.getCellStyle());
@@ -316,7 +317,7 @@ public class ExcelWriter extends SolWriter{
         style.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
         cell.setCellStyle(style);
     }
-    
+
     private void replacePrevious(File source){
         InputStream in = null;
         try {
@@ -348,5 +349,5 @@ public class ExcelWriter extends SolWriter{
             }
         }
     }
-    
+
 }
