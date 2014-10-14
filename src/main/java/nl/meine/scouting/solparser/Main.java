@@ -53,7 +53,7 @@ public class Main {
             if (input == null || output == null || input.isEmpty() || output.isEmpty()){
                 throw new IllegalArgumentException("Input and/or output are not properly defined.");
             }
-            Parser p = new Parser(input, output, sorter);
+            Parser p = new Parser(input, sorter);
             writer.init();
             p.read(skipfirst);
             if (writer != null && p.getAllPersons().size() > 0 && p.getSortedPersons().size() > 0) {

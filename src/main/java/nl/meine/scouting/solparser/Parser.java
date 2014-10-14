@@ -37,7 +37,6 @@ import nl.meine.scouting.solparser.sorter.SorterFactory;
 public class Parser {
 
     private File input;
-    private File output;
     private Map<String, List<Person>> sortedPersons = new HashMap();
     private List<Person> allPersons = new ArrayList();
 
@@ -58,9 +57,8 @@ public class Parser {
         this.sorter = sorter;
     }
 
-    public Parser(String inputFile, String outputFile, Sorter sorter) {
+    public Parser(String inputFile, Sorter sorter) {
         input = new File(inputFile);
-        output = new File(outputFile);
         this.sorter = sorter;
     }
 
