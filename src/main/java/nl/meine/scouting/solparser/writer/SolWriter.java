@@ -29,8 +29,8 @@ import nl.meine.scouting.solparser.entities.Person;
  * @author Meine Toonen
  */
 public abstract class SolWriter {
-    protected List<Person> allPersons = new ArrayList();
-    protected Map<String, List<Person>> sortedPersons = new HashMap();
+    protected List<Person> allPersons;
+    protected Map<String, List<Person>> sortedPersons;
     protected File output;
 
     public SolWriter(String output){

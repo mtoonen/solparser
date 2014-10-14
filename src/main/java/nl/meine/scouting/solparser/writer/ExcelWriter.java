@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
-import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -46,16 +45,16 @@ import org.apache.poi.ss.util.CellRangeAddress;
  */
 public class ExcelWriter extends SolWriter{
 
-    private CellStyle headingStyle;
-    private CellStyle normalStyle;
-    private FileOutputStream out = null;
-    private Workbook workbook;
+    protected CellStyle headingStyle;
+    protected CellStyle normalStyle;
+    protected FileOutputStream out = null;
+    protected Workbook workbook;
     private static final int NUM_ATTRIBUTES_PER_PERSON = 24;
     private final short COLOR_UPDATED = IndexedColors.YELLOW.index;
     private final short COLOR_NEW = IndexedColors.LIGHT_BLUE.index;
     private final short COLOR_OVERVLIEGER = IndexedColors.BRIGHT_GREEN.index;
 
-    private File previous;
+    protected File previous;
 
     private final static int NUM_LIDNUMMER_CELL = 0;
     private final static int NUM_SPELTAK_CELL = 19;
@@ -66,7 +65,7 @@ public class ExcelWriter extends SolWriter{
 
     @Override
     public void init() {
-             try {
+        try {
             out = new FileOutputStream(output);
             // create a new workbook
             workbook = new HSSFWorkbook();
@@ -243,14 +242,16 @@ public class ExcelWriter extends SolWriter{
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
                 Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
-                for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
-                    Row row = it.next();
-                    if( row.getRowNum() > 0){
-                        String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
-                        Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
-                        processPersonUpdates(row, previousRow);
-                    }
+                if(prevSheet != null){
+                    for (Iterator<Row> it = sheet.rowIterator(); it.hasNext();) {
+                        Row row = it.next();
+                        if( row.getRowNum() > 0){
+                            String lidnummer = row.getCell(NUM_LIDNUMMER_CELL).getStringCellValue();
+                            Row previousRow = getPreviousLidRow(lidnummer, prevSheet);
+                            processPersonUpdates(row, previousRow);
+                        }
 
+                    }
                 }
             } catch (FileNotFoundException ex) {
                 System.err.println("Could not locate file: "+ ex.getLocalizedMessage());

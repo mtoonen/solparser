@@ -5,6 +5,20 @@
  */
 package nl.meine.scouting.solparser.writer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URISyntaxException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import nl.meine.scouting.solparser.Parser;
+import nl.meine.scouting.solparser.ParserTest;
+import nl.meine.scouting.solparser.entities.Person;
+import nl.meine.scouting.solparser.sorter.SorterFactory;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,25 +30,49 @@ import static org.junit.Assert.*;
  *
  * @author meine
  */
-public class ExcelWriterTest {
+public class ExcelWriterTest extends ExcelWriter{
+
+    private static Map<String, List<Person>> sortedPersons;
+    private static List<Person> persons;
+    
+    private ExcelWriter instance = new ExcelWriter("dummy.xls");
 
     public ExcelWriterTest() {
+        super("dummy.xls");
     }
 
+
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws URISyntaxException {
+
+        File twopersons = ParserTest.getResource("twopersons.csv");
+        Parser p = new Parser(twopersons , SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
+
+        p.read(true);
+        persons = p.getAllPersons();
+        sortedPersons = p.getSortedPersons();
     }
 
     @AfterClass
     public static void tearDownClass() {
+        
     }
 
     @Before
     public void setUp() {
+        instance.setAllPersons(persons);
+        instance.setSortedPersons(sortedPersons);
+        instance.init();
     }
 
     @After
     public void tearDown() {
+        if(instance.output.exists()){
+            instance.output.delete();
+        }
+        if(instance.previous.exists()){
+            instance.previous.delete();
+        }
     }
 
     /**
@@ -42,11 +80,15 @@ public class ExcelWriterTest {
      */
     @Test
     public void testInit() {
-        System.out.println("init");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
-        instance.init();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
+        assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
+        assertNotNull( instance.out);
+        assertNotNull( instance.output);
+        assertNotNull(instance.previous);
+        assertNotNull(instance.workbook);
+        assertNotNull(instance.headingStyle);
+        assertNotNull(instance.normalStyle);
+
     }
 
     /**
@@ -54,12 +96,25 @@ public class ExcelWriterTest {
      */
     @Test
     public void testWrite() {
-        System.out.println("write");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
-        instance.init();
+        assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
+        assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
+        Date begin = new Date();
         instance.write();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        Date end = new Date();
+        Long duration = end.getTime() - begin.getTime();
+        assertTrue(instance.previous.lastModified() - instance.output.lastModified() < duration);
+        assertTrue(instance.output.exists());
+        
+        assertEquals(1,instance.workbook.getNumberOfSheets());
+        Sheet s = instance.workbook.getSheetAt(0);
+        assertEquals(3, s.getPhysicalNumberOfRows());
+        Row r1 = s.getRow(1);
+        Cell c1 = r1.getCell(0);
+        assertEquals ( true,c1.getStringCellValue().equalsIgnoreCase("16") || c1.getStringCellValue().equalsIgnoreCase("1616"));
+        Row r2 = s.getRow(2);
+        Cell c2 = r2.getCell(0);
+        assertEquals ( true,c2.getStringCellValue().equalsIgnoreCase("16") || c2.getStringCellValue().equalsIgnoreCase("1616"));
+        int a = 0;
     }
 
     /**
@@ -68,11 +123,10 @@ public class ExcelWriterTest {
     @Test
     public void testFinalize() throws Exception, Throwable {
         System.out.println("finalize");
-        ExcelWriter instance = new ExcelWriter("dummy.xls");
-        instance.init();
         instance.finalize();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertArrayEquals(IOUtils.toByteArray(new FileInputStream(instance.output)), IOUtils.toByteArray(new FileInputStream(instance.previous)));
+        assertTrue(instance.output.exists());
+        assertTrue(instance.previous.exists());
     }
 
 }
