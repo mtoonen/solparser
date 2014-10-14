@@ -46,6 +46,8 @@ public class ExcelWriterTest extends ExcelWriter{
     public void testInit() {
         System.out.println("init");
         ExcelWriter instance = new ExcelWriter("dummy.xls");
+        assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
+        assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
         instance.init();
         assertNotNull( instance.out);
         assertNotNull( instance.output);
@@ -63,12 +65,14 @@ public class ExcelWriterTest extends ExcelWriter{
     public void testWrite() {
         System.out.println("write");
         ExcelWriter instance = new ExcelWriter("dummy.xls");
+        assertNotNull ("Persons must be initialized before callinig init", instance.allPersons);
+        assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
         instance.init();
         assertNotNull (instance.allPersons);
         assertNotNull (instance.sortedPersons);
         instance.write();
         // TODO review the generated test code and remove the default call to fail.
-        
+
     }
 
     /**
