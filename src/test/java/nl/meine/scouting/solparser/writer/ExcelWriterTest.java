@@ -6,6 +6,7 @@
 package nl.meine.scouting.solparser.writer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.ParserTest;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -122,7 +124,9 @@ public class ExcelWriterTest extends ExcelWriter{
     public void testFinalize() throws Exception, Throwable {
         System.out.println("finalize");
         instance.finalize();
-        fail("The test case is a prototype.");
+        assertArrayEquals(IOUtils.toByteArray(new FileInputStream(instance.output)), IOUtils.toByteArray(new FileInputStream(instance.previous)));
+        assertTrue(instance.output.exists());
+        assertTrue(instance.previous.exists());
     }
 
 }
