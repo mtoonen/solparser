@@ -57,8 +57,8 @@ public class OnlyAllSorterTest {
 
         Map<String,List<Person>> sorted = parser.getSortedPersons();
         assertEquals(1, sorted.keySet().size());
-        assertTrue(!sorted.containsKey("Besturen"));
-        assertTrue(!sorted.containsKey("Speltakleiding"));
+        assertTrue(!sorted.containsKey(SorterFactory.GROUP_BESTUUR));
+        assertTrue(!sorted.containsKey(SorterFactory.GROUP_LEADERS));
         assertTrue(sorted.containsKey(SorterFactory.GROUP_NAME_ALL));
         assertEquals(2, sorted.get(SorterFactory.GROUP_NAME_ALL).size());
     }
