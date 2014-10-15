@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *  Copyright (C) 2013-2014 Meine Toonen
+ *  This file is part of the SolParser library.
+ *
+ *  The SolParser librar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The SolParser librar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with the SolParser librar. If not, see <http://www.gnu.org/licenses/>.
  */
 package nl.meine.scouting.solparser.writer;
 
@@ -36,7 +48,7 @@ public class ExcelWriterTest extends ExcelWriter{
 
     private static Map<String, List<Person>> sortedPersons;
     private static List<Person> persons;
-    
+
     private ExcelWriter instance = new ExcelWriter("dummy.xls");
 
     public ExcelWriterTest() {
@@ -51,19 +63,19 @@ public class ExcelWriterTest extends ExcelWriter{
 
     @AfterClass
     public static void tearDownClass() {
-        
+
     }
 
     @Before
     public void setUp() throws URISyntaxException {
-        
+
         File twopersons = ParserTest.getResource("twopersons.csv");
         Parser p = new Parser(twopersons , SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
 
         p.read(true);
         persons = p.getAllPersons();
         sortedPersons = p.getSortedPersons();
-        
+
         instance.setAllPersons(persons);
         instance.setSortedPersons(sortedPersons);
         instance.init();
@@ -108,7 +120,7 @@ public class ExcelWriterTest extends ExcelWriter{
         Long duration = end.getTime() - begin.getTime();
         assertTrue(instance.previous.lastModified() - instance.output.lastModified() < duration);
         assertTrue(instance.output.exists());
-        
+
         assertEquals(1,instance.workbook.getNumberOfSheets());
         Sheet s = instance.workbook.getSheetAt(0);
         assertEquals(3, s.getPhysicalNumberOfRows());
@@ -132,27 +144,27 @@ public class ExcelWriterTest extends ExcelWriter{
         assertTrue(instance.output.exists());
         assertTrue(instance.previous.exists());
     }
-    
+
     @Test
     public void testUpdates() throws Throwable{
         instance.write();
         instance.finalize();
-        
+
         File twopersons = ParserTest.getResource("twopersons_update.csv");
         Parser p = new Parser(twopersons, SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
 
         p.read(true);
         persons = p.getAllPersons();
         sortedPersons = p.getSortedPersons();
-        
-        
+
+
         instance = new ExcelWriter("dummy.xls");
         instance.setAllPersons(allPersons);
         instance.setSortedPersons(sortedPersons);
         instance.init();
         instance.write();
         instance.finalize();
-        
+
         Workbook wb = instance.workbook;
         Sheet s = wb.getSheetAt(0);
         assertEquals(4, s.getPhysicalNumberOfRows());
@@ -180,12 +192,12 @@ public class ExcelWriterTest extends ExcelWriter{
             }
         }
     }
-    
+
     @Test
     public void testRemovedPerson() throws Throwable{
         instance.write();
         instance.finalize();
-        
+
         // lidnummer 16: weg
         // lidnummer 1616 alles gelijk
         File twopersons = ParserTest.getResource("twopersons_removed.csv");
@@ -194,26 +206,26 @@ public class ExcelWriterTest extends ExcelWriter{
         p.read(true);
         persons = p.getAllPersons();
         sortedPersons = p.getSortedPersons();
-        
-        
+
+
         instance = new ExcelWriter("dummy.xls");
         instance.setAllPersons(allPersons);
         instance.setSortedPersons(sortedPersons);
         instance.init();
         instance.write();
         instance.finalize();
-        
+
         Workbook wb = instance.workbook;
         Sheet s = wb.getSheetAt(0);
         assertEquals(2, s.getPhysicalNumberOfRows());
-        
+
         Sheet removedSheet = wb.getSheet(ExcelWriter.SHEET_REMOVED_PERSONS);
         assertNotNull(removedSheet);
         assertEquals(2,removedSheet.getPhysicalNumberOfRows());
         Row r = removedSheet.getRow(1);
         Cell lidnummer = r.getCell(0);
         assertEquals("16", lidnummer.getStringCellValue());
-        
+
     }
 
 }
