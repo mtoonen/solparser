@@ -94,6 +94,7 @@ public class ExcelWriter extends SolWriter{
         }
 
         processQuitters();
+        sortSheets();
     }
 
     private void postProcessSheet(Sheet sheet) {
@@ -411,7 +412,9 @@ public class ExcelWriter extends SolWriter{
 
     private void sortSheets(){
         workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
-        workbook.setSheetOrder(SHEET_REMOVED_PERSONS, workbook.getNumberOfSheets() -2);
+        if(workbook.getSheet(SHEET_REMOVED_PERSONS) != null){
+            workbook.setSheetOrder(SHEET_REMOVED_PERSONS, workbook.getNumberOfSheets() - 1);
+        }
     }
 
     private void updateCellColor(Cell cell, short color){
