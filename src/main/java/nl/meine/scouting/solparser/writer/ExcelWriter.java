@@ -339,6 +339,7 @@ public class ExcelWriter extends SolWriter{
                     }
                 }
             }catch(IOException ex ){
+                System.err.println("Error Reading the previous file: " + ex.getLocalizedMessage());
                 return;
             }finally {
                 try {
