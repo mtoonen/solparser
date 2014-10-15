@@ -26,8 +26,8 @@ import java.util.Set;
  *
  * @author Meine Toonen <toonen.meine@gmail.com>
  */
-public class Person implements Comparable{
- 
+public class Person implements Comparable, Cloneable{
+
     private String lidnummer;
     private String lid_voornaam;
     private String lid_initialen;
@@ -64,7 +64,7 @@ public class Person implements Comparable{
     private String lid_telefoonnummer_ouder_verzorger_2;
 
     private String overige_informatie;
-    
+
     private List<Functie> functies = new ArrayList();
 
     public Person() {
@@ -205,7 +205,7 @@ public class Person implements Comparable{
     public void setLid_telefoon(String lid_telefoon) {
         this.lid_telefoon = lid_telefoon;
     }
-    
+
     public String getSingleFunctie(){
         return this.functie;
     }
@@ -268,7 +268,7 @@ public class Person implements Comparable{
     public String getSingleSpeleenheid() {
         return speleenheid;
     }
-    
+
     public String getAggregatedSpeleenheid(){
         String s = "";
         for (Functie f : functies) {
@@ -287,7 +287,7 @@ public class Person implements Comparable{
         }
         return speleenheden;
     }
-    
+
     public void setSpeleenheid(String speleenheid) {
         this.speleenheid = speleenheid;
     }
@@ -392,8 +392,13 @@ public class Person implements Comparable{
     public void setFuncties(List<Functie> functies) {
         this.functies = functies;
     }
-    
+
     public void addFunctie(String speltak, String functie){
         functies.add(new Functie(speltak, functie));
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
