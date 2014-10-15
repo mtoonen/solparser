@@ -76,7 +76,7 @@ public class ExcelWriter extends SolWriter{
 
             previous = new File("data" + File.separator + "previous.xls");
         } catch (FileNotFoundException ex) {
-            System.err.println("File Read Error" + ex.getLocalizedMessage());
+            System.out.println("File Read Error" + ex.getLocalizedMessage());
         }
     }
 
@@ -92,6 +92,8 @@ public class ExcelWriter extends SolWriter{
             }
             postProcessSheet(sheet);
         }
+
+        processQuitters();
     }
 
     private void postProcessSheet(Sheet sheet) {
@@ -101,10 +103,6 @@ public class ExcelWriter extends SolWriter{
             sheet.autoSizeColumn(i);
         }
         processUpdates(sheet);
-        if(sheet.getSheetName().equals(SorterFactory.GROUP_NAME_ALL)){
-            workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
-            processQuitters(sheet);
-        }
     }
 
      private Row createRow(Person p, Sheet sheet, int index) {
@@ -215,19 +213,18 @@ public class ExcelWriter extends SolWriter{
 
     }
 
-    @Override
-    public void finalize() throws Throwable {
-        super.finalize();
+    public void closeWriter() throws Throwable {
+        super.closeWriter();
         try {
             workbook.write(out);
         } catch (IOException ex) {
-            System.err.println("File write Error" + ex.getLocalizedMessage());
+            System.out.println("File write Error: " + ex.getLocalizedMessage());
         } finally {
             if (out != null) {
                 try {
                     out.close();
                 } catch (IOException ex) {
-                    System.err.println("File close Error" + ex.getLocalizedMessage());
+                    System.out.println("File close Error" + ex.getLocalizedMessage());
                 }
             }
         }
@@ -239,12 +236,14 @@ public class ExcelWriter extends SolWriter{
     }
 
     private void processUpdates(Sheet sheet){
+        System.out.println("Process updates on sheet: " + sheet.getSheetName());
         if(hasPrevious()){
             FileInputStream previousStream = null;
+            HSSFWorkbook prevWorkbook = null;
             try {
                 previousStream = new FileInputStream(previous);
                 //Get the workbook instance for XLS file
-                HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
+                prevWorkbook = new HSSFWorkbook(previousStream);
                 Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
                 if(prevSheet != null){
                     // Bestaande mensen: eventuele updates
@@ -259,16 +258,22 @@ public class ExcelWriter extends SolWriter{
                     }
                 }
             } catch (FileNotFoundException ex) {
-                System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
+                System.out.println("Could not locate file: "+ ex.getLocalizedMessage());
             } catch (IOException ex) {
-                System.err.println("Problems reading file: "+ ex.getLocalizedMessage());
+                System.out.println("Problems reading file: "+ ex.getLocalizedMessage());
             } finally {
                 try {
                     if(previousStream != null){
                         previousStream.close();
+                        if(prevWorkbook != null){
+                            FileOutputStream out = new FileOutputStream(previous);
+
+                            prevWorkbook.write(out);
+                            out.close();
+                        }
                     }
                 } catch (IOException ex) {
-                    System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                    System.out.println("Problems closing file: "+ ex.getLocalizedMessage());
                 }
             }
         }
@@ -316,8 +321,9 @@ public class ExcelWriter extends SolWriter{
         }
     }
 
-    private void processQuitters(Sheet sheet) {
+    private void processQuitters() {
         if(hasPrevious()){
+            Sheet sheet = workbook.getSheet(SorterFactory.GROUP_NAME_ALL);
             List<Row> quitters = new ArrayList<Row>();
             FileInputStream previousStream = null;
             try{
@@ -339,7 +345,7 @@ public class ExcelWriter extends SolWriter{
                     }
                 }
             }catch(IOException ex ){
-                System.err.println("Error Reading the previous file: " + ex.getLocalizedMessage());
+                System.out.println("Error Reading the previous file: " + ex.getLocalizedMessage());
                 return;
             }finally {
                 try {
@@ -347,7 +353,7 @@ public class ExcelWriter extends SolWriter{
                         previousStream.close();
                     }
                 } catch (IOException ex) {
-                    System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                    System.out.println("Problems closing file: "+ ex.getLocalizedMessage());
                 }
             }
             if(quitters.isEmpty()){
@@ -403,6 +409,11 @@ public class ExcelWriter extends SolWriter{
         }
     }
 
+    private void sortSheets(){
+        workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
+        workbook.setSheetOrder(SHEET_REMOVED_PERSONS, workbook.getNumberOfSheets() -2);
+    }
+
     private void updateCellColor(Cell cell, short color){
         CellStyle style = workbook.createCellStyle();;
         style.cloneStyleFrom(cell.getCellStyle());
@@ -429,16 +440,16 @@ public class ExcelWriter extends SolWriter{
             in.close();
             prevOut.close();
         } catch (FileNotFoundException ex) {
-            System.err.println("Could not locate file: "+ ex.getLocalizedMessage());
+            System.out.println("Could not locate file: "+ ex.getLocalizedMessage());
         } catch (IOException ex) {
-            System.err.println("Problems writing file: "+ ex.getLocalizedMessage());
+            System.out.println("Problems writing file: "+ ex.getLocalizedMessage());
         } finally {
             try {
                 if(in != null){
                     in.close();
                 }
             } catch (IOException ex) {
-                System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                System.out.println("Problems closing file: "+ ex.getLocalizedMessage());
             }
         }
     }

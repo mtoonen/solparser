@@ -83,7 +83,7 @@ public class Parser {
             }
             in.close();
         } catch (IOException e) {
-            System.err.println("File Read Error" + e.getLocalizedMessage());
+            System.out.println("File Read Error" + e.getLocalizedMessage());
         }
         postProcessPersons();
 

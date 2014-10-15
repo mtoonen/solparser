@@ -40,8 +40,7 @@ public abstract class SolWriter {
     public abstract void init();
     public abstract void write();
 
-    @Override
-    public void finalize() throws Throwable{
+    public void closeWriter() throws Throwable{
         super.finalize();
     }
 
