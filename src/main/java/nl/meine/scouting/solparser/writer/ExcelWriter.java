@@ -59,7 +59,7 @@ public class ExcelWriter extends SolWriter{
 
     private final static int NUM_LIDNUMMER_CELL = 0;
     private final static int NUM_SPELTAK_CELL = 19;
-    
+
     public static final String SHEET_REMOVED_PERSONS = "Vertrokken mensen";
 
     public ExcelWriter( String output ){
@@ -255,7 +255,7 @@ public class ExcelWriter extends SolWriter{
                             Row previousRow = getLidFromSheet(lidnummer, prevSheet);
                             processPersonUpdates(row, previousRow);
                         }
-                     
+
                     }
                 }
             } catch (FileNotFoundException ex) {
@@ -284,7 +284,7 @@ public class ExcelWriter extends SolWriter{
         }
         return null;
     }
-    
+
     private void processPersonUpdates( Row newRow, Row oldRow){
         String newSpeltak = newRow.getCell(NUM_SPELTAK_CELL).getStringCellValue();
         boolean isNew = oldRow == null;
@@ -315,15 +315,19 @@ public class ExcelWriter extends SolWriter{
             }
         }
     }
-    
+
     private void processQuitters(Sheet sheet) {
         if(hasPrevious()){
             List<Row> quitters = new ArrayList<Row>();
+            FileInputStream previousStream = null;
             try{
-                FileInputStream previousStream = new FileInputStream(previous);
+                previousStream = new FileInputStream(previous);
                 //Get the workbook instance for XLS file
                 HSSFWorkbook prevWorkbook = new HSSFWorkbook(previousStream);
                 Sheet prevSheet = prevWorkbook.getSheet(SorterFactory.GROUP_NAME_ALL);
+                if(prevSheet == null){
+                    return;
+                }
                 // Check of er mensen vertrokken zijn
                 for (Row row : prevSheet) {
                     if (row.getRowNum() > 0) {
@@ -336,6 +340,14 @@ public class ExcelWriter extends SolWriter{
                 }
             }catch(IOException ex ){
                 return;
+            }finally {
+                try {
+                    if(previousStream != null){
+                        previousStream.close();
+                    }
+                } catch (IOException ex) {
+                    System.err.println("Problems closing file: "+ ex.getLocalizedMessage());
+                }
             }
             if(quitters.isEmpty()){
                 return;
