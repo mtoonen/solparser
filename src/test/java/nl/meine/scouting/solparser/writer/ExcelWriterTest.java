@@ -28,6 +28,7 @@ import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.ParserTest;
 import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
+import nl.meine.scouting.solparser.sorter.UnitSorter;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -252,9 +253,20 @@ public class ExcelWriterTest extends ExcelWriter{
         instance.init();
         instance.write();
         instance.closeWriter();
-        assertEquals(12,instance.workbook.getNumberOfSheets());
+        assertEquals(13,instance.workbook.getNumberOfSheets());
         assertEquals(SorterFactory.GROUP_NAME_ALL, instance.workbook.getSheetAt(0).getSheetName());
-        assertEquals(ExcelWriter.SHEET_REMOVED_PERSONS, instance.workbook.getSheetAt(11).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BEAVERS, instance.workbook.getSheetAt(1).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_CUBS_BOYS, instance.workbook.getSheetAt(2).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_CUBS_GIRLS, instance.workbook.getSheetAt(3).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_SCOUTS_BOYS, instance.workbook.getSheetAt(4).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_SCOUTS_GIRLS, instance.workbook.getSheetAt(5).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_EXPLORERS, instance.workbook.getSheetAt(6).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_STAM, instance.workbook.getSheetAt(7).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BOARD_GROUP, instance.workbook.getSheetAt(8).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BOARD_OTHER, instance.workbook.getSheetAt(9).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_STAMPLUS, instance.workbook.getSheetAt(10).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_EXTRAORDINARY, instance.workbook.getSheetAt(11).getSheetName());
+        assertEquals(ExcelWriter.SHEET_REMOVED_PERSONS, instance.workbook.getSheetAt(12).getSheetName());
 
         int a = 0;
     }

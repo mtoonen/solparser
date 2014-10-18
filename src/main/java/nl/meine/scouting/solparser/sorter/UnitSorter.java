@@ -30,6 +30,18 @@ import nl.meine.scouting.solparser.entities.Person;
  */
 public class UnitSorter extends OnlyAllSorter {
 
+    public static final String SHEET_NAME_UNIT_BEAVERS = "Bevers";
+    public static final String SHEET_NAME_UNIT_CUBS_BOYS = "Welpen-jongens";
+    public static final String SHEET_NAME_UNIT_CUBS_GIRLS = "Welpen-meisjes";
+    public static final String SHEET_NAME_UNIT_SCOUTS_GIRLS = "Gidsen";
+    public static final String SHEET_NAME_UNIT_SCOUTS_BOYS = "Verkenners";
+    public static final String SHEET_NAME_UNIT_EXPLORERS = "Explorers Die Impeesa's";
+    public static final String SHEET_NAME_UNIT_STAM = "Stam Arendsoog";
+    public static final String SHEET_NAME_UNIT_STAMPLUS = "Vrienden van Jan";
+    public static final String SHEET_NAME_UNIT_BOARD_GROUP = "Groepsbestuur";
+    public static final String SHEET_NAME_UNIT_BOARD_OTHER = "stich.-ver-bestuur";
+    public static final String SHEET_NAME_UNIT_EXTRAORDINARY = "Buitengewoon lid Scouting Jan van";
+    
     public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> sortedPersons = new HashMap();
         if (includeall) {
