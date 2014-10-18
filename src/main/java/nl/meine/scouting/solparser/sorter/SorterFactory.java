@@ -49,7 +49,7 @@ public class SorterFactory {
         } else if (value.equalsIgnoreCase(SORTER_BESTUUR)) {
             sorter = new BestuurSorter();
         } else if (value.equalsIgnoreCase(SORTER_ONLYALL)) {
-            sorter = new OnlyAllSorter();
+            sorter = new OnlyAllSorter() {};
         } else {
             throw new IllegalArgumentException("Invalid sorter argument given: " + value);
         }

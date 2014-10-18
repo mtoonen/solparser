@@ -17,22 +17,28 @@
  */
 package nl.meine.scouting.solparser.sorter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.entities.Person;
 
 /**
  *
  * @author Meine Toonen <toonen.meine@gmail.com>
  */
-public class OnlyAllSorter implements Sorter{
+public abstract class OnlyAllSorter implements Sorter{
 
     public Map<String, List<Person>> sort(List<Person> allPersons, boolean includeall) {
         Map<String, List<Person>> all = new HashMap();
         all.put(SorterFactory.GROUP_NAME_ALL, allPersons);
         return all;
+    }
+    
+    
+
+    public List<String> getOrder(){
+        return new ArrayList<String>();
     }
 
 }

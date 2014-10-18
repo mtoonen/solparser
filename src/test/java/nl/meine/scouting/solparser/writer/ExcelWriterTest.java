@@ -18,7 +18,6 @@
 package nl.meine.scouting.solparser.writer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -27,8 +26,9 @@ import java.util.Map;
 import nl.meine.scouting.solparser.Parser;
 import nl.meine.scouting.solparser.ParserTest;
 import nl.meine.scouting.solparser.entities.Person;
+import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
-import org.apache.commons.io.IOUtils;
+import nl.meine.scouting.solparser.sorter.UnitSorter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -49,6 +49,7 @@ public class ExcelWriterTest extends ExcelWriter{
 
     private static Map<String, List<Person>> sortedPersons;
     private static List<Person> persons;
+    private static Sorter sorter;
 
     private ExcelWriter instance = new ExcelWriter("dummy.xls");
 
@@ -71,7 +72,8 @@ public class ExcelWriterTest extends ExcelWriter{
     public void setUp() throws URISyntaxException {
 
         File twopersons = ParserTest.getResource("twopersons.csv");
-        Parser p = new Parser(twopersons , SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL));
+        sorter =  SorterFactory.createSorter(SorterFactory.SORTER_ONLYALL);
+        Parser p = new Parser(twopersons ,sorter);
 
         p.read(true);
         persons = p.getAllPersons();
@@ -118,6 +120,7 @@ public class ExcelWriterTest extends ExcelWriter{
         assertNotNull ("Persons must be initialized before callinig init", instance.sortedPersons);
         Date begin = new Date();
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
         Date end = new Date();
         Long duration = end.getTime() - begin.getTime();
@@ -151,6 +154,7 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testUpdates() throws Throwable{
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
 
         File twopersons = ParserTest.getResource("twopersons_update.csv");
@@ -166,6 +170,7 @@ public class ExcelWriterTest extends ExcelWriter{
         instance.setSortedPersons(sortedPersons);
         instance.init();
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
 
         Workbook wb = instance.workbook;
@@ -199,6 +204,7 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testRemovedPerson() throws Throwable{
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
 
         // lidnummer 16: weg
@@ -216,6 +222,7 @@ public class ExcelWriterTest extends ExcelWriter{
         instance.setSortedPersons(sortedPersons);
         instance.init();
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
 
         Workbook wb = instance.workbook;
@@ -234,6 +241,7 @@ public class ExcelWriterTest extends ExcelWriter{
     @Test
     public void testOrderOfSheets() throws CloneNotSupportedException, Throwable{
         instance.write();
+        instance.postprocess(sorter.getOrder());
         instance.closeWriter();
 
         // lidnummer 16: weg
@@ -245,17 +253,26 @@ public class ExcelWriterTest extends ExcelWriter{
         persons = p.getAllPersons();
         sortedPersons = p.getSortedPersons();
 
-
         instance = new ExcelWriter("dummy.xls");
         instance.setAllPersons(persons);
         instance.setSortedPersons(sortedPersons);
         instance.init();
         instance.write();
+        instance.postprocess(p.getSorter().getOrder());
         instance.closeWriter();
-        assertEquals(12,instance.workbook.getNumberOfSheets());
+        assertEquals(13,instance.workbook.getNumberOfSheets());
         assertEquals(SorterFactory.GROUP_NAME_ALL, instance.workbook.getSheetAt(0).getSheetName());
-        assertEquals(ExcelWriter.SHEET_REMOVED_PERSONS, instance.workbook.getSheetAt(11).getSheetName());
-
-        int a = 0;
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BEAVERS, instance.workbook.getSheetAt(1).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_CUBS_BOYS, instance.workbook.getSheetAt(2).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_CUBS_GIRLS, instance.workbook.getSheetAt(3).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_SCOUTS_BOYS, instance.workbook.getSheetAt(4).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_SCOUTS_GIRLS, instance.workbook.getSheetAt(5).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_EXPLORERS, instance.workbook.getSheetAt(6).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_STAM, instance.workbook.getSheetAt(7).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BOARD_GROUP, instance.workbook.getSheetAt(8).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_BOARD_OTHER, instance.workbook.getSheetAt(9).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_STAMPLUS, instance.workbook.getSheetAt(10).getSheetName());
+        assertEquals(UnitSorter.SHEET_NAME_UNIT_EXTRAORDINARY, instance.workbook.getSheetAt(11).getSheetName());
+        assertEquals(ExcelWriter.SHEET_REMOVED_PERSONS, instance.workbook.getSheetAt(12).getSheetName());
     }
 }

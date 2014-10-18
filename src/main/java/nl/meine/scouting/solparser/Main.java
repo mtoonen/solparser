@@ -60,6 +60,7 @@ public class Main {
                 writer.setAllPersons(p.getAllPersons());
                 writer.setSortedPersons(p.getSortedPersons());
                 writer.write();
+                writer.postprocess(sorter.getOrder());
                 writer.closeWriter();
             } else {
                 System.err.println("Not entirely initialized. Did you read before writing?");

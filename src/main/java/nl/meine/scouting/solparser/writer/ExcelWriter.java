@@ -92,9 +92,6 @@ public class ExcelWriter extends SolWriter{
             }
             postProcessSheet(sheet);
         }
-
-        processQuitters();
-        sortSheets();
     }
 
     private void postProcessSheet(Sheet sheet) {
@@ -410,10 +407,24 @@ public class ExcelWriter extends SolWriter{
         }
     }
 
-    private void sortSheets(){
+    private void sortSheets(List<String> order){
         workbook.setSheetOrder(SorterFactory.GROUP_NAME_ALL, 0);
-        if(workbook.getSheet(SHEET_REMOVED_PERSONS) != null){
-            workbook.setSheetOrder(SHEET_REMOVED_PERSONS, workbook.getNumberOfSheets() - 1);
+        int index = 1;
+        for (String sheetName : order) {
+           boolean exists = sortSheet(sheetName, index);
+           if(exists){
+               index++;
+           }
+        }
+        sortSheet(SHEET_REMOVED_PERSONS, workbook.getNumberOfSheets() - 1);
+    }
+    
+    private boolean sortSheet(String sheetName, int index){
+        if(workbook.getSheet(sheetName) != null){
+            workbook.setSheetOrder(sheetName, index);
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -455,6 +466,12 @@ public class ExcelWriter extends SolWriter{
                 System.out.println("Problems closing file: "+ ex.getLocalizedMessage());
             }
         }
+    }
+
+    @Override
+    public void postprocess(List<String> order) {
+        processQuitters();
+        sortSheets(order);
     }
 
 }

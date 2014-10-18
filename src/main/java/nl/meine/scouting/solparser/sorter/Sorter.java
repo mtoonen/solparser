@@ -28,5 +28,5 @@ import nl.meine.scouting.solparser.entities.Person;
 public interface Sorter {
     
     public Map<String, List<Person> > sort(List<Person> person, boolean includeall);
-    
+    public List<String> getOrder();
 }
