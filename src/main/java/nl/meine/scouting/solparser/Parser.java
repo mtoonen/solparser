@@ -173,4 +173,8 @@ public class Parser {
     public List<Person> getAllPersons() {
         return allPersons;
     }
+    
+    public Sorter getSorter(){
+        return sorter;
+    }
 }

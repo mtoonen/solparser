@@ -39,4 +39,9 @@ public class LeadersAndBestuurSorter extends OnlyAllSorter {
         sorted.putAll(leiding.sort(person, false));
         return sorted;
     }
+
+    @Override
+    public List<String> getOrder() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

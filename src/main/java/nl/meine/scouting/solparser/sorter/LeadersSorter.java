@@ -48,4 +48,9 @@ public class LeadersSorter extends OnlyAllSorter {
         sorted.put(SorterFactory.GROUP_LEADERS, leaders);
         return sorted;
     }
+
+    @Override
+    public List<String> getOrder() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
