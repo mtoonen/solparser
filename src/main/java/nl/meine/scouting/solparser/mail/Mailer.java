@@ -69,7 +69,10 @@ public class Mailer {
         Address from = new InternetAddress(fromEmail, fromName);
         Message msg = new MimeMessage(getMailSession(user, password, host));
         msg.setFrom(from);
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+        String [] toMails = email.split(",");
+        for (String toMail : toMails) {
+            msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(toMail));
+        }
         msg.setSubject(subject);
         msg.setSentDate(new Date());        
         
