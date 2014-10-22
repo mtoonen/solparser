@@ -17,7 +17,11 @@
  */
 package nl.meine.scouting.solparser;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
+import nl.meine.scouting.solparser.mail.Mailer;
 import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
 import nl.meine.scouting.solparser.writer.ExcelWriter;
@@ -28,7 +32,7 @@ import nl.meine.scouting.solparser.writer.SolWriter;
  * @author Meine Toonen
  */
 public class Main {
-    public static final String HELP_TEXT = "SolParser Library created by Meine Toonen. Version 0.5. \n"
+    public static final String HELP_TEXT = "SolParser Library created by Meine Toonen. Version 0.9. \n"
             + "\t Use the SolParser library to convert a horrifying csv file to a more human readable excel file, with handy grouping options. The following parameters are permitted: \n"
             + "\t\t Usage: \n"
             + "\t\t\t-i \t Required: Name to input file. \n"
@@ -36,6 +40,14 @@ public class Main {
             + "\t\t\t-s \t Optional (default is unit): Sorting options: which tabs should be created. Available options: leaders, bestuur, leadersandbestuur, unit, onlyall \n"
             + "\t\t\t-ot \t Optional (default is excel): Which output should be generated. Available options: excel \n"
             + "\t\t\t-h \t Display this helptext. \n"
+            + "\t\t\t-m \t Mail the results. \n"
+            + "\t\t\t-ms \t Mail the results from this mailserver. \n"
+            + "\t\t\t-mu \t Mail the results with this user on the mailserver. \n"
+            + "\t\t\t-mp \t Mail the results with this password from the mailuser. \n"
+            + "\t\t\t-mh \t Mail the results from this mailhost. \n"
+            + "\t\t\t-ma \t Mail the results from this actual mailaddress. \n"
+            + "\t\t\t-mt \t Mail the results from to this mailaddress (use comma separated list (no spaces) for multiple recipients). \n"
+            //+ "\t\t\t-maf \t Set the reply mailaddress. \n"
             + "\t\t\t-sf \t Optional (default true) Skip the first line of the csv value.";
     public static void main(String[] args) throws Throwable {
 
@@ -44,6 +56,9 @@ public class Main {
 
             System.out.println(HELP_TEXT);
         } else {
+            Date now = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy", Locale.forLanguageTag("NL"));
+            String date = sdf.format(now);
             //-s onlyall -ot excel -sf true -i selectie_2871.csv -o aap.xls
             String output = prop.getProperty("output");
             Sorter sorter = SorterFactory.createSorter(prop.getProperty("sorter"));
@@ -64,6 +79,16 @@ public class Main {
                 writer.closeWriter();
             } else {
                 System.err.println("Not entirely initialized. Did you read before writing?");
+            }
+            if(prop.containsKey("mail")){
+                String to = prop.getProperty("-mt");
+                String host = prop.getProperty("-mh");
+                String fromEmail = prop.getProperty("-ma");
+                String from = "Ledenlijstbot";
+                String user = prop.getProperty("-mu");
+                String password = prop.getProperty("-mp");
+                String message = "Test" ;
+                Mailer.sendMail(from, fromEmail, to, "Ledenlijst " +date, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
             }
 
         }
@@ -89,6 +114,10 @@ public class Main {
                     prop.setProperty("input", value);
                 } else if (key.equalsIgnoreCase("-o")) {
                     prop.setProperty("output", value);
+                }else if(key.equalsIgnoreCase("-m")){
+                    prop.setProperty("mail", value);
+                }else{
+                    prop.setProperty(key, value);
                 }
             }
         }
