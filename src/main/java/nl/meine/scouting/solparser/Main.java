@@ -19,9 +19,13 @@ package nl.meine.scouting.solparser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
+import nl.meine.scouting.solparser.entities.Person;
 import nl.meine.scouting.solparser.mail.Mailer;
+import nl.meine.scouting.solparser.sorter.LeadersAndBestuurSorter;
 import nl.meine.scouting.solparser.sorter.Sorter;
 import nl.meine.scouting.solparser.sorter.SorterFactory;
 import nl.meine.scouting.solparser.writer.ExcelWriter;
@@ -47,7 +51,7 @@ public class Main {
             + "\t\t\t-mh \t Mail the results from this mailhost. \n"
             + "\t\t\t-ma \t Mail the results from this actual mailaddress. \n"
             + "\t\t\t-mt \t Mail the results from to this mailaddress (use comma separated list (no spaces) for multiple recipients). \n"
-            //+ "\t\t\t-maf \t Set the reply mailaddress. \n"
+            + "\t\t\t-mat \t Retrieve the mailaddresses automatically from the generated persons list (leaders and bestuur are being e-mailed) \n"
             + "\t\t\t-sf \t Optional (default true) Skip the first line of the csv value.";
     public static void main(String[] args) throws Throwable {
 
@@ -75,9 +79,13 @@ public class Main {
             if (input == null || output == null || input.isEmpty() || output.isEmpty()){
                 throw new IllegalArgumentException("Input and/or output are not properly defined.");
             }
+            
+            
             Parser p = new Parser(input, sorter);
             writer.init();
             p.read(skipfirst);
+            
+            
             if (writer != null && p.getAllPersons().size() > 0 && p.getSortedPersons().size() > 0) {
                 writer.setAllPersons(p.getAllPersons());
                 writer.setSortedPersons(p.getSortedPersons());
@@ -87,8 +95,15 @@ public class Main {
             } else {
                 System.err.println("Not entirely initialized. Did you read before writing?");
             }
+            
+            
             if(prop.containsKey("mail")){
-                String to = prop.getProperty("-mt");
+                String to = "";
+                if(prop.contains("-mat")){
+                    to = getToAdresses(p.getAllPersons());
+                }else{
+                     to = prop.getProperty("-mt");
+                }
                 String host = prop.getProperty("-mh");
                 String fromEmail = prop.getProperty("-ma");
                 String from = "Ledenlijstbot";
@@ -141,5 +156,29 @@ public class Main {
             throw new IllegalArgumentException("Invalid output argument given: " + value);
         }
         return writer;
+    }
+    
+    public static String getToAdresses(List<Person> persons){
+        LeadersAndBestuurSorter lab = new LeadersAndBestuurSorter();
+        Map<String, List<Person>> sorted = lab.sort(persons, false);
+        
+        String addresses = "";
+        List<Person> leaders = sorted.get(SorterFactory.GROUP_LEADERS);
+        for (Person leader : leaders) {
+            if(addresses.length() > 0){
+                addresses += ",";
+            }
+            addresses += leader.getLid_mailadres();
+        }
+        
+        List<Person> bestuursLeden = sorted.get(SorterFactory.GROUP_BESTUUR);
+        for (Person bestuursLid : bestuursLeden) {
+            if(addresses.length() > 0){
+                addresses += ",";
+            }
+            addresses += bestuursLid.getLid_mailadres();
+        }
+        
+        return addresses;
     }
 }
