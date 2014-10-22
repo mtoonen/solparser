@@ -36,7 +36,7 @@ public class Main {
             + "\t Use the SolParser library to convert a horrifying csv file to a more human readable excel file, with handy grouping options. The following parameters are permitted: \n"
             + "\t\t Usage: \n"
             + "\t\t\t-i \t Required: Name to input file. \n"
-            + "\t\t\t-o \t Required: Name of the file to output. \n"
+            + "\t\t\t-o \t Optional: Name of the file to output. (default is ledenlijst_<date>.xls) \n"
             + "\t\t\t-s \t Optional (default is unit): Sorting options: which tabs should be created. Available options: leaders, bestuur, leadersandbestuur, unit, onlyall \n"
             + "\t\t\t-ot \t Optional (default is excel): Which output should be generated. Available options: excel \n"
             + "\t\t\t-h \t Display this helptext. \n"
@@ -57,10 +57,17 @@ public class Main {
             System.out.println(HELP_TEXT);
         } else {
             Date now = new Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd MMMMM yyyy", Locale.forLanguageTag("NL"));
-            String date = sdf.format(now);
-            //-s onlyall -ot excel -sf true -i selectie_2871.csv -o aap.xls
-            String output = prop.getProperty("output");
+            SimpleDateFormat fullMonthName = new SimpleDateFormat("dd MMMMM yyyy", Locale.forLanguageTag("NL"));
+            SimpleDateFormat shortVersionFormatter = new SimpleDateFormat("dd_MM_yyyy", Locale.forLanguageTag("NL"));
+            String fullName = fullMonthName.format(now);
+            String shortVersion = shortVersionFormatter.format(now);
+            
+            String output = "";
+            if(!prop.contains("output")){
+                output = "ledenlijst_" + shortVersion + ".xls";
+            }else{
+                 output = prop.getProperty("output");
+            }
             Sorter sorter = SorterFactory.createSorter(prop.getProperty("sorter"));
             SolWriter writer = getWriter(prop.getProperty("outputtype"),output);
             boolean skipfirst = prop.getProperty("skipfirst") == null ? true : Boolean.parseBoolean(prop.getProperty("skipfirst"));
@@ -88,7 +95,7 @@ public class Main {
                 String user = prop.getProperty("-mu");
                 String password = prop.getProperty("-mp");
                 String message = "Test" ;
-                Mailer.sendMail(from, fromEmail, to, "Ledenlijst " +date, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
+                Mailer.sendMail(from, fromEmail, to, "Ledenlijst " +fullName, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
             }
 
         }
