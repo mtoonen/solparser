@@ -19,8 +19,10 @@ package nl.meine.scouting.solparser.sorter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nl.meine.scouting.solparser.entities.Functie;
 import nl.meine.scouting.solparser.entities.Person;
 
@@ -36,7 +38,7 @@ public class LeadersSorter extends OnlyAllSorter {
         if (includeall) {
             sorted.putAll(super.sort(allPersons, true));
         }
-        List<Person> leaders = new ArrayList();
+        Set<Person> leaders = new HashSet<Person>();
         for (Person p : allPersons) {
             for (Functie functieObj : p.getFuncties()) {
                 String functie = functieObj.getFunctie();
@@ -45,7 +47,7 @@ public class LeadersSorter extends OnlyAllSorter {
                 }
             }
         }
-        sorted.put(SorterFactory.GROUP_LEADERS, leaders);
+        sorted.put(SorterFactory.GROUP_LEADERS, new ArrayList<Person>(leaders));
         return sorted;
     }
 

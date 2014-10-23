@@ -60,4 +60,8 @@ public abstract class SolWriter {
     public void setSortedPersons(Map<String, List<Person>> sortedPersons) {
         this.sortedPersons = sortedPersons;
     }
+
+    public File getOutput() {
+        return output;
+    }
 }
