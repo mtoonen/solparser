@@ -45,7 +45,6 @@ public class Main {
             + "\t\t\t-ot \t Optional (default is excel): Which output should be generated. Available options: excel \n"
             + "\t\t\t-h \t Display this helptext. \n"
             + "\t\t\t-m \t Mail the results. \n"
-            + "\t\t\t-ms \t Mail the results from this mailserver. \n"
             + "\t\t\t-mu \t Mail the results with this user on the mailserver. \n"
             + "\t\t\t-mp \t Mail the results with this password from the mailuser. \n"
             + "\t\t\t-mh \t Mail the results from this mailhost. \n"
@@ -109,8 +108,22 @@ public class Main {
                 String from = "Ledenlijstbot";
                 String user = prop.getProperty("-mu");
                 String password = prop.getProperty("-mp");
-                String message = "Test" ;
-                Mailer.sendMail(from, fromEmail, to, "Ledenlijst " +fullName, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
+                String message = "";
+                message += "Hallo,\n";
+                message += "Heb je het al gehoord? Het JvH Ledenlijst alarm ging net af! Hierbij het bijbehorende mailtje! \n";
+                message += "Hier is een nieuwe ledenlijst met de informatie uit SOL.\n";
+                message += "\n";
+                message += "De kleuren zijn op dit moment als volgt: \n" ;
+                message += "\tNieuw: Blauw\n";
+                message += "\tOvervlieger: groen \n";
+                message += "\tAanpassing aan gegevens(bijv. verhuizing): geel\n";
+                message += "\n";
+                message += "Mocht er iets mis zijn hoor ik het graag.\n";
+                message += "Mvg,\n";
+                message += "\n";
+                message += "De ledenlijstrobot\n";
+
+                Mailer.sendMail(from, fromEmail, to, "JvH Ledenlijstalarm " +fullName, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
             }
 
         }

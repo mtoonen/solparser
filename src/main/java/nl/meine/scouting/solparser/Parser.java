@@ -66,8 +66,6 @@ public class Parser {
 
     public void read(boolean skipfirst) {
         try {
-            /*StringReader sr = new StringReader(null)
-            BufferedReader in = new BufferedReader(new FileReader(input));*/
             Reader reader = new InputStreamReader(new FileInputStream(input), "utf-8");
             BufferedReader br = new BufferedReader(reader);
             String str;
