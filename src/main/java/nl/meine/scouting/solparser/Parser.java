@@ -19,8 +19,10 @@ package nl.meine.scouting.solparser;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,14 +66,17 @@ public class Parser {
 
     public void read(boolean skipfirst) {
         try {
-            BufferedReader in = new BufferedReader(new FileReader(input));
+            /*StringReader sr = new StringReader(null)
+            BufferedReader in = new BufferedReader(new FileReader(input));*/
+            Reader reader = new InputStreamReader(new FileInputStream(input), "utf-8");
+            BufferedReader br = new BufferedReader(reader);
             String str;
 
             // Skip first line
             if(skipfirst){
-                str = in.readLine();
+                str = br.readLine();
             }
-            while ((str = in.readLine()) != null) {
+            while ((str = br.readLine()) != null) {
                 if (str.isEmpty()) {
                     continue;
                 }
@@ -81,7 +86,7 @@ public class Parser {
 
                 allPersons.add(p);
             }
-            in.close();
+            br.close();
         } catch (IOException e) {
             System.out.println("File Read Error" + e.getLocalizedMessage());
         }
@@ -173,7 +178,7 @@ public class Parser {
     public List<Person> getAllPersons() {
         return allPersons;
     }
-    
+
     public Sorter getSorter(){
         return sorter;
     }
