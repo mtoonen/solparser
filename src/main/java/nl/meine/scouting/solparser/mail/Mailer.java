@@ -49,10 +49,10 @@ public class Mailer {
                return new PasswordAuthentication(user, password);
             }
         });
-        
+
         return session;
     }
-    
+
     /**
      * Sends a mail with an attachment enclosed
      * @param fromName The name which should be display as the sender.
@@ -65,10 +65,10 @@ public class Mailer {
      * @param user
      * @param password
      * @param host
-     * @throws Exception 
+     * @throws Exception
      */
     public static void sendMail(String fromName, String fromEmail, String email, String subject, String mailContent, File attachment, String filename, String user, String password, String host) throws Exception {
-    
+
         Address from = new InternetAddress(fromEmail, fromName);
         Message msg = new MimeMessage(getMailSession(user, password, host));
         msg.setFrom(from);
@@ -77,12 +77,12 @@ public class Mailer {
             msg.addRecipient(Message.RecipientType.BCC, new InternetAddress(toMail));
         }
         msg.setSubject(subject);
-        msg.setSentDate(new Date());        
-        
+        msg.setSentDate(new Date());
+
         // Create the message part
         BodyPart messageBodyPart = new MimeBodyPart();
         messageBodyPart.setText(mailContent);
-        
+
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
 

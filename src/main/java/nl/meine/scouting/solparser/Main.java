@@ -64,7 +64,7 @@ public class Main {
             SimpleDateFormat shortVersionFormatter = new SimpleDateFormat("dd_MM_yyyy", Locale.forLanguageTag("NL"));
             String fullName = fullMonthName.format(now);
             String shortVersion = shortVersionFormatter.format(now);
-            
+
             String output = "";
             if(!prop.contains("output")){
                 output = "ledenlijst_" + shortVersion + ".xls";
@@ -78,13 +78,13 @@ public class Main {
             if (input == null || output == null || input.isEmpty() || output.isEmpty()){
                 throw new IllegalArgumentException("Input and/or output are not properly defined.");
             }
-            
-            
+
+
             Parser p = new Parser(input, sorter);
             writer.init();
             p.read(skipfirst);
-            
-            
+
+
             if (writer != null && p.getAllPersons().size() > 0 && p.getSortedPersons().size() > 0) {
                 writer.setAllPersons(p.getAllPersons());
                 writer.setSortedPersons(p.getSortedPersons());
@@ -94,11 +94,11 @@ public class Main {
             } else {
                 System.err.println("Not entirely initialized. Did you read before writing?");
             }
-            
-            
+
+
             if(prop.containsKey("mail")){
                 String to = "";
-                if(prop.contains("-mat")){
+                if(prop.containsKey("-mat")){
                     to = getToAdresses(p.getAllPersons());
                 }else{
                      to = prop.getProperty("-mt");
@@ -170,11 +170,11 @@ public class Main {
         }
         return writer;
     }
-    
+
     public static String getToAdresses(List<Person> persons){
         LeadersAndBestuurSorter lab = new LeadersAndBestuurSorter();
         Map<String, List<Person>> sorted = lab.sort(persons, false);
-        
+
         String addresses = "";
         List<Person> leaders = sorted.get(SorterFactory.GROUP_LEADERS);
         for (Person leader : leaders) {
@@ -183,7 +183,7 @@ public class Main {
             }
             addresses += leader.getLid_mailadres();
         }
-        
+
         List<Person> bestuursLeden = sorted.get(SorterFactory.GROUP_BESTUUR);
         for (Person bestuursLid : bestuursLeden) {
             if(addresses.length() > 0){
@@ -191,7 +191,7 @@ public class Main {
             }
             addresses += bestuursLid.getLid_mailadres();
         }
-        
+
         return addresses;
     }
 }
