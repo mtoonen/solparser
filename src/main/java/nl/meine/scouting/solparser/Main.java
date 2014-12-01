@@ -50,7 +50,7 @@ public class Main {
             + "\t\t\t-mh \t Mail the results from this mailhost. \n"
             + "\t\t\t-ma \t Mail the results from this actual mailaddress. \n"
             + "\t\t\t-mt \t Mail the results from to this mailaddress (use comma separated list (no spaces) for multiple recipients). \n"
-            + "\t\t\t-mat \t Retrieve the mailaddresses automatically from the generated persons list (leaders and bestuur are being e-mailed) \n"
+            + "\t\t\t-mat \t Retrieve the mailaddresses automatically from the generated persons list (leaders and bestuur are being e-mailed). true/false \n"
             + "\t\t\t-sf \t Optional (default true) Skip the first line of the csv value.";
     public static void main(String[] args) throws Throwable {
 
