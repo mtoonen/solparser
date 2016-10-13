@@ -122,8 +122,9 @@ public class Main {
                 message += "Mvg,\n";
                 message += "\n";
                 message += "De ledenlijstrobot\n";
-
-                Mailer.sendMail(from, fromEmail, to, "JvH Ledenlijstalarm " +fullName, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
+                if(!Boolean.valueOf(prop.getProperty("debug", "false"))){
+                    Mailer.sendMail(from, fromEmail, to, "JvH Ledenlijstalarm " +fullName, message,writer.getOutput(), writer.getOutput().getName(), user, password, host);
+                }
             }
 
         }
@@ -178,18 +179,22 @@ public class Main {
         String addresses = "";
         List<Person> leaders = sorted.get(SorterFactory.GROUP_LEADERS);
         for (Person leader : leaders) {
-            if(addresses.length() > 0){
-                addresses += ",";
+            if (leader.getLid_mailadres() != null && !leader.getLid_mailadres().isEmpty()) {
+                if (addresses.length() > 0) {
+                    addresses += ",";
+                }
+                addresses += leader.getLid_mailadres();
             }
-            addresses += leader.getLid_mailadres();
         }
 
         List<Person> bestuursLeden = sorted.get(SorterFactory.GROUP_BESTUUR);
         for (Person bestuursLid : bestuursLeden) {
-            if(addresses.length() > 0){
-                addresses += ",";
+            if (bestuursLid.getLid_mailadres() != null && !bestuursLid.getLid_mailadres().isEmpty()) {
+                if (addresses.length() > 0) {
+                    addresses += ",";
+                }
+                addresses += bestuursLid.getLid_mailadres();
             }
-            addresses += bestuursLid.getLid_mailadres();
         }
 
         return addresses;
